@@ -1,0 +1,25 @@
+[user]
+	email = dalmahal@indiana.edu
+	name = Deyaa
+[color]
+	branch = auto
+	diff = auto
+	status = auto
+	ui = auto
+[color "branch"]
+       current = yellow reverse
+       local = yellow
+       remote = green
+[color "diff"]
+       meta = yellow bold
+       frag = magenta bold
+       old = red bold
+       new = green bold
+[color "status"]
+       added = yellow
+       changed = green
+       untracked = cyan
+[alias]
+	gp = push origin master:refs/heads/master
+[core]
+    editor = emacs

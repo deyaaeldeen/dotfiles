@@ -1,0 +1,4 @@
+machine gmail port 993 login diaa6510@gmail.com
+machine smtp.gmail.com port 465 login diaa6510@gmail.com
+machine indiana port 993 login dalmahal
+machine mail-relay.iu.edu port 465 login dalmahal

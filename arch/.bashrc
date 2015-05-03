@@ -8,8 +8,9 @@
 xrdb -merge .Xresources
 
 # for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
-HISTSIZE=2000
-HISTFILESIZE=4000
+HISTSIZE=32768
+HISTFILESIZE=32768
+export HISTIGNORE="cd [a-zA-Z0-9_.*]*:mv [a-zA-Z0-9_.*]*:cp [a-zA-Z0-9_.*]*:.*"
 
 alias ls='ls --color=auto'
 PS1='[\u@\h \W]\$ '
@@ -31,8 +32,11 @@ alias .4='cd ../../../../'
 alias .5='cd ../../../../..'
 alias k="killall -9"
 alias h='cd ~'
+alias hh='history'
 alias rm='rm -rf'
 
+alias img='sxiv'
+alias 'cdrom'='sudo mount -a /dev/sr0' # pass the path to mount the cd in
 alias wrk='cd /mnt/disk/Work/Indiana/gradual/'
 alias sd='cd /mnt/disk/Study/Indiana/B522'
 alias t='cd /mnt/disk/Teaching/p423'
@@ -42,9 +46,11 @@ alias gs="git status"
 alias gc="git commit -am"
 alias gh="git push"
 alias gl="git pull"
+alias glg='git log'
+alias gcn='git clean -xfd'
+alias gdr='git push origin :'
 
 alias p-s='sudo pacman -S'      #install
-alias p-syu='sudo pacman -Syu'  #sync refresh sys update
 alias p-rs='sudo pacman -Rs'    #remove plus unused dependencies
 alias p-scc='sudo pacman -Scc'  #clean cache - all pkgs
 alias p-sc='sudo pacman -Sc'    #clean cache - old pkgs only
@@ -56,9 +62,10 @@ alias p-qe='sudo pacman -Qe'    #list explicitely installed pkgs
 alias p-ql='sudo pacman -Ql'    #find pkg file list
 alias p-qo='sudo pacman -Qo'    #/path/to/file = find owner
 alias p-sf='sudo pacman -Sf'    #reinstall - for dep problem
-
-alias a-syu='aurget -Syu'
+alias syu='sudo pacman -Syu;aurget -Syu' # system upgrade
 alias a-s='aurget -S'
+
+alias racket='racket -il xrepl'
 
 extract () {
      if [ -f $1 ] ; then

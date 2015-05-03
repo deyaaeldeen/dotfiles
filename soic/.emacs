@@ -7,6 +7,7 @@
 ;;  This setup needs the following software to be installed in your
 ;;  system:
 ;;  o texlive: LaTeX
+;;  o languagetool: for proofreading
 ;;
 ;;  To install, put this file in your home directory.
 ;;--------------------------------------------------------------------------
@@ -21,10 +22,10 @@
 (require 'cl)
 
 (setq user-full-name "Deyaaeldeen Almahallawi"
-      user-mail-address "dalmahal@indiana.edu")
+      user-mail-address "dalmahal@indiana.edu"
+      package-enable-at-startup nil)
 
 (require 'package)
-(setq package-enable-at-startup nil)
 (add-to-list 'package-archives
              '("melpa" . "http://melpa.milkbox.net/packages/") t)
 (add-to-list 'package-archives
@@ -41,7 +42,8 @@
   (package-refresh-contents)
   (package-install 'use-package))
 
-(require 'use-package)
+(eval-when-compile
+  (require 'use-package))
 (setq use-package-minimum-reported-time 0
       use-package-verbose t)
 
@@ -53,71 +55,13 @@
   :ensure t
   :defer t)
 
-(use-package autodisass-llvm-bitcode
-  :ensure t
+(use-package auctex
+  :ensure auctex
   :defer t)
 
-(use-package bbdb
+(use-package auctex-latexmk
   :ensure t
   :defer t)
-
-(use-package cmake-mode
-  :ensure t
-  :defer t)
-
-(use-package ebib
-  :ensure t
-  :defer t)
-
-(use-package emamux
-  :ensure t
-  :defer t)
-
-(use-package google-translate
-  :ensure t
-  :defer t)
-
-(use-package llvm-mode
-  :ensure t
-  :defer t)
-
-(use-package paradox
-  :ensure t
-  :defer t)
-
-(use-package racket-mode
-  :ensure t
-  :defer t)
-
-(use-package screenshot
-  :ensure t
-  :defer t)
-
-(use-package sml-mode
-  :ensure t
-  :defer t)
-
-(use-package w3m
-  :ensure t
-  :defer t)
-
-(use-package writegood-mode
-  :ensure t
-  :defer t)
-
-;; (setq agda2-include-dirs (list "." (expand-file-name "~/agda-stdlib-0.8.1/src")))
-;; (load-file (let ((coding-system-for-read 'utf-8))
-;; 	     (shell-command-to-string "agda-mode locate")))
-;; (require 'agda-input)
-
-(use-package flycheck
-  :ensure t
-  :init
-  (hook-into-modes 'flycheck-mode '(prog-mode-hook))
-  :config
-  (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc)
-		flyspell-issue-message-flag nil
-		flycheck-display-errors-delay .2))
 
 (use-package auto-complete
   :ensure t
@@ -128,6 +72,129 @@
   (ac-config-default)
   (ac-set-trigger-key "C-o"))
 
+(use-package auto-complete-auctex
+  :ensure t
+  :defer t)
+
+(use-package autodisass-llvm-bitcode
+  :ensure t
+  :defer t)
+
+(use-package bbdb
+  :ensure t
+  :defer t
+  :config
+  (setq
+   bbdb-use-pop-up nil
+   bbdb-offer-save 1                        ;; 1 means save-without-asking
+   bbdb-always-add-address t                ;; add new addresses to existing...
+   bbdb-canonicalize-redundant-nets-p t     ;; x@foo.bar.cx => x@bar.cx
+   bbdb-completion-type nil                 ;; complete on anything
+   bbdb-complete-name-allow-cycling t       ;; cycle through matches
+   bbbd-message-caching-enabled t           ;; be fast
+   bbdb-use-alternate-names t               ;; use AKA
+   ;; auto-create addresses from mail
+   bbdb/mail-auto-create-p 'bbdb-ignore-some-messages-hook
+   bbdb-ignore-some-messages-alist
+   '(( "From" . "no.?reply\\|DAEMON\\|daemon\\|facebookmail\\|twitter"))))
+
+(use-package bibtex
+  :ensure t
+  :defer t
+  :mode ("\\.bib" . bibtex-mode)
+  :config
+  (setq bibtex-align-at-equal-sign t)
+  (add-hook 'bibtex-mode-hook (lambda () (set-fill-column 120))))
+
+(use-package cmake-mode
+  :ensure t
+  :defer t)
+
+(use-package dired
+  :defer
+  :config
+  (setq dired-listing-switches "-lGh --group-directories-first"))
+
+(use-package dired+
+  :ensure t
+  :defer t
+  :config
+  (setq diredp-wrap-around-flag t))
+
+(use-package ebib
+  :ensure t
+  :defer t)
+
+(use-package elfeed
+  :ensure t
+  :defer t
+  :config
+  (setq elfeed-feeds
+	'("http://endlessparentheses.com/atom.xml" ;; Emacs Blog
+	  "http://www.masteringemacs.org/feed/"    ;; Emacs Blog
+	  "http://emacs-fu.blogspot.com/feeds/posts/default"
+	  "http://emacsredux.com/atom.xml"         ;; Emacs Blog
+	  "http://www.lunaryorn.com/feed.atom"     ;; Emacs Blog
+	  "http://www.reddit.com/r/haskell/.rss"
+	  "http://www.reddit.com/r/compilers/.rss"
+	  "http://www.reddit.com/r/emacs/.rss"
+	  "http://www.reddit.com/r/llvm/.rss"
+	  "http://www.reddit.com/r/cpp/.rss"
+	  )))
+
+(use-package emamux
+  :ensure t
+  :defer t)
+
+(use-package epa
+  :defer t
+  :config
+  (setq mml2015-use 'epg
+	mml2015-verbose t
+	epg-user-id indiana-pk
+	mml2015-encrypt-to-self t
+	mml2015-always-trust nil
+	mml2015-cache-passphrase t
+	mml2015-passphrase-cache-expiry '36000
+	mml2015-sign-with-sender t
+	gnus-message-replyencrypt t
+	gnus-message-replysign t
+	gnus-message-replysignencrypted t
+	gnus-treat-x-pgp-sig t
+	;;       mm-sign-option 'guided
+	;;       mm-encrypt-option 'guided
+	mm-verify-option 'always
+	mm-decrypt-option 'always
+	epg-debug t ;;  then read the *epg-debug*" buffer
+	gnus-buttonized-mime-types
+	'("multipart/alternative" "multipart/encrypted" "multipart/signed"
+	  ".*/signed")))
+
+(use-package fill-column-indicator
+  :ensure t
+  :defer t
+  :init
+  (hook-into-modes 'fci-mode '(prog-mode-hook)))
+
+(use-package flx-ido
+  :ensure t
+  :init
+  (flx-ido-mode 1))
+
+(use-package flx-isearch
+  :ensure t
+  :bind (("C-M-s" . flx-isearch-forward)
+	 ("C-M-r" . flx-isearch-backward)))
+
+(use-package flycheck
+  :ensure t
+  :init
+  (hook-into-modes 'flycheck-mode '(prog-mode-hook))
+  :config
+  (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc)
+		flyspell-issue-message-flag nil
+		flycheck-display-errors-delay .2))
+
 (use-package flyspell
   :ensure t
   :init
@@ -136,13 +203,121 @@
   (dolist (hook '(change-log-mode-hook log-edit-mode-hook))
     (add-hook hook (lambda () (flyspell-mode -1)))))
 
-(use-package recentf
+(use-package gist
   :ensure t
-  :bind ("C-x C-r" . recentf-open-files)
-  :init
-  (recentf-mode 1)
+  :bind ("C-c g" . gist-region-or-buffer-private)
   :config
-  (setq recentf-max-menu-items 100))
+  (setq gist-view-gist t))
+
+(use-package gnus
+  :bind ("C-c s" . gnus))
+
+(use-package google-c-style
+  :ensure t
+  :defer t)
+
+(use-package google-translate
+  :ensure t
+  :defer t)
+
+(use-package gscholar-bibtex
+  :ensure t
+  :bind ("C-c g" . gscholar-bibtex)
+  :config
+  (setq gscholar-bibtex-default-source "Google Scholar"
+	gscholar-bibtex-database-file "/mnt/disk/Work/papers/refs.bib"))
+
+(use-package haskell-mode
+  :ensure t
+  :defer t
+  :init
+  (progn
+    (add-hook 'haskell-mode-hook #'turn-on-haskell-indentation)
+    (add-hook 'haskell-mode-hook #'turn-on-haskell-doc-mode)
+    (add-hook 'haskell-mode-hook '(lambda () (setq tab-width 2))))
+  :config
+  (progn
+    (custom-set-variables
+     '(haskell-process-suggest-remove-import-lines t)
+     '(haskell-process-auto-import-loaded-modules t)
+     '(haskell-process-log t)
+     '(haskell-tags-on-save t))
+    (define-key haskell-mode-map (kbd "C-c C-l")
+     'haskell-process-load-or-reload)
+    (define-key haskell-mode-map (kbd "C-c C-z")
+      'haskell-interactive-switch)
+    (define-key haskell-mode-map (kbd "C-c C-n C-t")
+      'haskell-process-do-type)
+    (define-key haskell-mode-map (kbd "C-c C-n C-i")
+      'haskell-process-do-info)
+    (define-key haskell-mode-map (kbd "C-c C-n C-c")
+      'haskell-process-cabal-build)
+    (define-key haskell-mode-map (kbd "C-c C-n c")
+      'haskell-process-cabal)
+    (define-key haskell-mode-map (kbd "SPC")
+      'haskell-mode-contextual-space)
+    (define-key haskell-mode-map (kbd "C-c C-s") 'haskell-hoogle)
+    (setq haskell-hoogle-command "hoogle")
+    (eval-after-load 'haskell-cabal
+      '(progn
+         (define-key haskell-cabal-mode-map (kbd "C-c C-z")
+           'haskell-interactive-switch)
+         (define-key haskell-cabal-mode-map (kbd "C-c C-k")
+           'haskell-interactive-mode-clear)
+         (define-key haskell-cabal-mode-map (kbd "C-c C-c")
+           'haskell-process-cabal-build)
+         (define-key haskell-cabal-mode-map (kbd "C-c c")
+           'haskell-process-cabal)))
+    (custom-set-variables '(haskell-process-type 'cabal-repl))))
+
+(use-package helm-bibtex
+  :ensure t
+  :defer t
+  :bind ("C-c b" . helm-bibtex)
+  :config
+  (setq helm-bibtex-bibliography "/mnt/disk/Work/papers/refs.bib"))
+
+(use-package ido
+  :init
+  (ido-mode t)
+  :config
+  (setq ido-use-virtual-buffers t
+	ido-auto-merge-work-directories-length -1
+	ido-create-new-buffer 'always
+	ido-use-filename-at-point 'guess
+	ido-use-url-at-point t
+	ido-save-directory-list-file (concat user-emacs-directory "ido.last")
+	ido-use-faces nil))
+
+(use-package ido-ubiquitous
+  :ensure t
+  :init
+  (ido-ubiquitous-mode 1))
+
+(use-package langtool
+  :ensure t
+  :defer t
+  :config
+  (setq langtool-language-tool-jar "/usr/share/java/languagetool/languagetool-commandline.jar"
+	langtool-java-classpath
+          "/usr/share/languagetool:/usr/share/java/languagetool/*"
+	  langtool-mother-tongue "en"))
+
+(use-package latex-math-preview
+  :ensure t
+  :defer t)
+
+(use-package latex-pretty-symbols
+  :ensure t
+  :defer t)
+
+(use-package latex-preview-pane
+  :ensure t
+  :defer t)
+
+(use-package llvm-mode
+  :ensure t
+  :defer t)
 
 (use-package magit
   :ensure t
@@ -162,43 +337,6 @@
 	   fetch-address)))))
   (add-hook 'magit-mode-hook #'add-PR-fetch))
 
-(use-package gist
-  :ensure t
-  :bind ("C-c g p" . gist-region-or-buffer-private)
-  :config
-  (setq gist-view-gist t))
-
-(use-package haskell-mode
-  :ensure t
-  :defer t
-  :config
-  (define-key haskell-mode-map (kbd "C-c C-c") 'haskell-compile)
-  (add-hook 'haskell-mode-hook 'interactive-haskell-mode)
-  (setq haskell-process-type 'cabal-repl)
-  (define-key haskell-mode-map (kbd "C-c C-l") 'haskell-process-load-or-reload)
-  (define-key haskell-mode-map (kbd "C-`") 'haskell-interactive-bring)
-  (define-key haskell-mode-map (kbd "C-c C-t") 'haskell-process-do-type)
-  (define-key haskell-mode-map (kbd "C-c C-i") 'haskell-process-do-info)
-  (define-key haskell-mode-map (kbd "C-c C-k") 'haskell-interactive-mode-clear)
-  (define-key haskell-mode-map (kbd "C-c c") 'haskell-process-cabal)
-  (define-key haskell-mode-map (kbd "SPC") 'haskell-mode-contextual-space)
-  (define-key haskell-mode-map (kbd "C-c C-s") 'haskell-hoogle)
-  (setq haskell-hoogle-command "hoogle"))
-
-(use-package scala-mode2
-  :ensure t
-  :defer t)
-
-(use-package google-c-style
-  :ensure t
-  :defer t)
-
-(use-package fill-column-indicator
-  :ensure t
-  :defer t
-  :init
-  (hook-into-modes 'fci-mode '(prog-mode-hook)))
-
 (use-package markdown-mode
   :ensure t
   :defer t
@@ -211,29 +349,62 @@
       (when (executable-find preferred-markdown-impl)
         (setq markdown-command preferred-markdown-impl)))))
 
-(use-package auctex
-  :ensure auctex
-  :defer t)
-
-(use-package auctex-latexmk
+(use-package paradox
   :ensure t
   :defer t)
 
-(use-package auto-complete-auctex
+(use-package python-mode
   :ensure t
   :defer t)
 
-(use-package latex-preview-pane
+(use-package racket-mode
   :ensure t
   :defer t)
 
-(use-package latex-math-preview
+(use-package recentf
+  :ensure t
+  :bind ("C-x C-r" . recentf-open-files)
+  :init
+  (recentf-mode 1)
+  :config
+  (setq recentf-max-menu-items 300))
+
+(use-package saveplace
+  :init
+  (setq-default save-place t)
+  (setq save-place-file (expand-file-name ".places" user-emacs-directory)))
+
+(use-package scala-mode2
   :ensure t
   :defer t)
 
-(use-package latex-pretty-symbols
+(use-package screenshot
   :ensure t
   :defer t)
+
+(use-package smex
+  :ensure t
+  :demand t
+  :bind ("M-x" . smex)
+  :init
+  (setq smex-save-file (expand-file-name ".smex-items" user-emacs-directory)))
+
+(use-package sml-mode
+  :ensure t
+  :defer t)
+
+(use-package w3m
+  :ensure t
+  :defer t)
+
+(use-package writegood-mode
+  :ensure t
+  :defer t)
+
+;; (setq agda2-include-dirs (list "." (expand-file-name "~/agda-stdlib-0.8.1/src")))
+;; (load-file (let ((coding-system-for-read 'utf-8))
+;; 	     (shell-command-to-string "agda-mode locate")))
+;; (require 'agda-input)
 
 (require 'auto-complete-auctex)
 (add-hook 'LaTeX-mode-hook
@@ -252,57 +423,12 @@
 		   TeX-PDF-mode t)
 	     (setq-default TeX-master nil)
 	     (turn-on-auto-fill)
-	     (latex-preview-pane-enable)))
+	     (latex-preview-pane-enable)
+	     (define-key LaTeX-mode-map (kbd "C-c C-k") 'compile)))
 (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
 (add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
 (add-hook 'LaTeX-mode-hook 'TeX-source-correlate-mode)
 (add-hook 'LaTeX-mode-hook 'LaTeX-preview-setup)
-
-(use-package bibtex
-  :ensure t
-  :defer t
-  :mode ("\\.bib" . bibtex-mode)
-  :config
-  (setq bibtex-align-at-equal-sign t)
-  (add-hook 'bibtex-mode-hook (lambda () (set-fill-column 120))))
-
-(use-package helm-bibtex
-  :ensure t
-  :defer t
-  :bind ("C-c b" . helm-bibtex)
-  :config
-  (setq helm-bibtex-bibliography "/mnt/disk/Work/papers/refs.bib"))
-
-(use-package gscholar-bibtex
-  :ensure t
-  :bind ("C-c g" . gscholar-bibtex)
-  :config
-  (setq gscholar-bibtex-default-source "Google Scholar"
-	gscholar-bibtex-database-file "/mnt/disk/Work/papers/refs.bib"))
-
-(use-package elfeed
-  :ensure t
-  :defer t
-  :config
-  (setq elfeed-feeds
-	'("http://endlessparentheses.com/atom.xml" ;; Emacs Blog
-	  "http://www.masteringemacs.org/feed/"    ;; Emacs Blog
-	  "http://emacs-fu.blogspot.com/feeds/posts/default"
-	  "http://emacsredux.com/atom.xml"         ;; Emacs Blog
-	  "http://www.lunaryorn.com/feed.atom"     ;; Emacs Blog
-	  "http://www.reddit.com/r/haskell/.rss"
-	  "http://www.reddit.com/r/compilers/.rss"
-	  "http://www.reddit.com/r/emacs/.rss"
-	  "http://www.reddit.com/r/llvm/.rss"
-	  "http://www.reddit.com/r/cpp/.rss"
-	  )))
-
-(use-package smex
-  :ensure t
-  :demand t
-  :bind ("M-x" . smex)
-  :init
-  (setq smex-save-file (expand-file-name ".smex-items" user-emacs-directory)))
 
 (show-paren-mode 1)
 (defun match-paren (arg)
@@ -322,11 +448,8 @@
 (global-hl-line-mode 1)
 (display-time)
 (display-battery-mode)
-(ido-mode t)
 
-(setq ido-enable-flex-matching t
-      ido-use-virtual-buffers t
-      column-number-mode t
+(setq column-number-mode t
       scroll-step 1
       scroll-conservatively 10000
       inhibit-splash-screen t
@@ -336,8 +459,7 @@
       use-dialog-box nil
       visible-bell t
       x-select-enable-clipboard t
-      vc-follow-symlinks t
-      dired-listing-switches "-lGh --group-directories-first")
+      vc-follow-symlinks t)
 
 ;; Save all backup file in this directory.
 (setq backup-directory-alist (quote ((".*" . "~/.emacs_backups/"))))
@@ -355,6 +477,7 @@
 (global-set-key (kbd "C--") 'text-scale-decrease)
 (global-set-key (kbd "C-c C-k") 'compile)
 (global-set-key (kbd "C-c q") 'auto-fill-mode)
+(global-set-key (kbd "C-c i") '(lambda () (interactive) (indent-region (point-min) (point-max))))
 
 ;; disable some annoying keychords
 (global-unset-key "\^z")
@@ -374,3 +497,17 @@
                          c2)))
   (or window-system
       (face-set-after-frame-default (selected-frame))))
+
+(custom-set-faces
+  '(default ((t (:inherit nil :stipple nil :background "white" :foreground "black" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :width normal :height 120 :family "liberation mono"))))
+  '(background "blue")
+  '(font-lock-builtin-face ((((class color) (background dark)) (:foreground "Turquoise"))))
+  '(font-lock-comment-face ((t (:foreground "darkred"))))
+  '(font-lock-constant-face ((((class color) (background dark)) (:bold t :foreground "DarkOrchid"))))
+  '(font-lock-doc-string-face ((t (:foreground "lightblue"))))
+  '(font-lock-function-name-face ((t (:foreground "blue"))))
+  '(font-lock-keyword-face ((t (:bold t :foreground "steelblue"))))
+;  '(font-lock-keyword-face ((t (:bold t :foreground "CornflowerBlue"))))
+  '(font-lock-preprocessor-face ((t (:italic nil :foreground "CornFlowerBlue"))))
+  '(font-lock-reference-face ((t (:foreground "DodgerBlue"))))
+  '(font-lock-string-face ((t (:foreground "Aquamarine4")))))

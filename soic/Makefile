@@ -10,6 +10,7 @@ all:
 	ln -s $(top)/.gnus ~/.gnus
 	ln -s $(top)/.authinfo ~/.authinfo
 	ln -s $(top)/.signature ~/.signature
+	ln -s $(top)/.signature2 ~/.signature2
 	ln -s $(top)/.gitconfig ~/.gitconfig
 	ln -s $(top)/.tmux.conf ~/.tmux.conf
 

@@ -243,7 +243,7 @@
      '(haskell-process-log t)
      '(haskell-tags-on-save t))
     (define-key haskell-mode-map (kbd "C-c C-l")
-     'haskell-process-load-or-reload)
+      'haskell-process-load-or-reload)
     (define-key haskell-mode-map (kbd "C-c C-z")
       'haskell-interactive-switch)
     (define-key haskell-mode-map (kbd "C-c C-n C-t")
@@ -300,8 +300,8 @@
   :config
   (setq langtool-language-tool-jar "/usr/share/java/languagetool/languagetool-commandline.jar"
 	langtool-java-classpath
-          "/usr/share/languagetool:/usr/share/java/languagetool/*"
-	  langtool-mother-tongue "en"))
+	"/usr/share/languagetool:/usr/share/java/languagetool/*"
+	langtool-mother-tongue "en"))
 
 (use-package latex-math-preview
   :ensure t
@@ -424,7 +424,9 @@
 	     (setq-default TeX-master nil)
 	     (turn-on-auto-fill)
 	     (latex-preview-pane-enable)
-	     (define-key LaTeX-mode-map (kbd "C-c C-k") 'compile)))
+	     (define-key LaTeX-mode-map (kbd "C-c C-k") '(lambda () (interactive)
+							   (save-window-excursion
+							     (recompile))))))
 (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
 (add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
 (add-hook 'LaTeX-mode-hook 'TeX-source-correlate-mode)
@@ -455,7 +457,7 @@
       scroll-conservatively 10000
       inhibit-splash-screen t
       initial-scratch-message nil
-      ;initial-major-mode 'gnus
+					;initial-major-mode 'gnus
       echo-keystrokes 0.1
       use-dialog-box nil
       visible-bell t
@@ -492,23 +494,39 @@
 (defun change-colors (c1 c2)
   (interactive "sback: \nsfore: ")
   (modify-frame-parameters (selected-frame)
-                 (list (cons 'background-color
-                         c1)
-                   (cons 'foreground-color
-                         c2)))
+			   (list (cons 'background-color
+				       c1)
+				 (cons 'foreground-color
+				       c2)))
   (or window-system
       (face-set-after-frame-default (selected-frame))))
 
 (custom-set-faces
-  '(default ((t (:inherit nil :stipple nil :background "white" :foreground "black" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :width normal :height 120 :family "liberation mono"))))
-  '(background "blue")
-  '(font-lock-builtin-face ((((class color) (background dark)) (:foreground "Turquoise"))))
-  '(font-lock-comment-face ((t (:foreground "darkred"))))
-  '(font-lock-constant-face ((((class color) (background dark)) (:bold t :foreground "DarkOrchid"))))
-  '(font-lock-doc-string-face ((t (:foreground "lightblue"))))
-  '(font-lock-function-name-face ((t (:foreground "blue"))))
-  '(font-lock-keyword-face ((t (:bold t :foreground "steelblue"))))
-;  '(font-lock-keyword-face ((t (:bold t :foreground "CornflowerBlue"))))
-  '(font-lock-preprocessor-face ((t (:italic nil :foreground "CornFlowerBlue"))))
-  '(font-lock-reference-face ((t (:foreground "DodgerBlue"))))
-  '(font-lock-string-face ((t (:foreground "Aquamarine4")))))
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(default ((t (:inherit nil :stipple nil :background "white" :foreground "black" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :width normal :height 120 :family "liberation mono"))))
+ '(background "blue")
+ '(font-lock-builtin-face ((((class color) (background dark)) (:foreground "Turquoise"))))
+ '(font-lock-comment-face ((t (:foreground "darkred"))))
+ '(font-lock-constant-face ((((class color) (background dark)) (:bold t :foreground "DarkOrchid"))))
+ '(font-lock-doc-string-face ((t (:foreground "lightblue"))))
+ '(font-lock-function-name-face ((t (:foreground "blue"))))
+ '(font-lock-keyword-face ((t (:bold t :foreground "steelblue"))))
+ '(font-lock-preprocessor-face ((t (:italic nil :foreground "CornFlowerBlue"))))
+ '(font-lock-reference-face ((t (:foreground "DodgerBlue"))))
+ '(font-lock-string-face ((t (:foreground "Aquamarine4")))))
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(custom-safe-themes
+   (quote
+    ("bb08c73af94ee74453c90422485b29e5643b73b05e8de029a6909af6a3fb3f58" "d44939ef462b7efb9bb5739f2dd50b03ac9ecf98c4df6578edcf145d6a2d188d" "1b8d67b43ff1723960eb5e0cba512a2c7a2ad544ddb2533a90101fd1852b426e" "82d2cac368ccdec2fcc7573f24c3f79654b78bf133096f9b40c20d97ec1d8016" "06f0b439b62164c6f8f84fdda32b62fb50b6d00e8b01c2208e55543a6337433a" "282606e51ef2811142af5068bd6694b7cf643b27d63666868bc97d04422318c1" default)))
+ '(haskell-process-auto-import-loaded-modules t)
+ '(haskell-process-log t)
+ '(haskell-process-suggest-remove-import-lines t)
+ '(haskell-process-type (quote cabal-repl))
+ '(haskell-tags-on-save t))

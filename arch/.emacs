@@ -151,7 +151,7 @@
   :config
   (setq mml2015-use 'epg
 	mml2015-verbose t
-	epg-user-id indiana-pk
+	epg-user-id "Deyaaeldeen Almahallawi <dalmahal@indiana.edu>"
 	mml2015-encrypt-to-self t
 	mml2015-always-trust nil
 	mml2015-cache-passphrase t
@@ -191,7 +191,7 @@
   :init
   (hook-into-modes 'flycheck-mode '(prog-mode-hook))
   :config
-  (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc)
+  (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc racket)
 		flyspell-issue-message-flag nil
 		flycheck-display-errors-delay .2))
 
@@ -524,9 +524,27 @@
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
    (quote
-    ("bb08c73af94ee74453c90422485b29e5643b73b05e8de029a6909af6a3fb3f58" "d44939ef462b7efb9bb5739f2dd50b03ac9ecf98c4df6578edcf145d6a2d188d" "1b8d67b43ff1723960eb5e0cba512a2c7a2ad544ddb2533a90101fd1852b426e" "82d2cac368ccdec2fcc7573f24c3f79654b78bf133096f9b40c20d97ec1d8016" "06f0b439b62164c6f8f84fdda32b62fb50b6d00e8b01c2208e55543a6337433a" "282606e51ef2811142af5068bd6694b7cf643b27d63666868bc97d04422318c1" default)))
+    ("4cf3221feff536e2b3385209e9b9dc4c2e0818a69a1cdb4b522756bcdf4e00a4" "4aee8551b53a43a883cb0b7f3255d6859d766b6c5e14bcb01bed572fcbef4328" "bb08c73af94ee74453c90422485b29e5643b73b05e8de029a6909af6a3fb3f58" "d44939ef462b7efb9bb5739f2dd50b03ac9ecf98c4df6578edcf145d6a2d188d" "1b8d67b43ff1723960eb5e0cba512a2c7a2ad544ddb2533a90101fd1852b426e" "82d2cac368ccdec2fcc7573f24c3f79654b78bf133096f9b40c20d97ec1d8016" "06f0b439b62164c6f8f84fdda32b62fb50b6d00e8b01c2208e55543a6337433a" "282606e51ef2811142af5068bd6694b7cf643b27d63666868bc97d04422318c1" default)))
  '(haskell-process-auto-import-loaded-modules t)
  '(haskell-process-log t)
  '(haskell-process-suggest-remove-import-lines t)
  '(haskell-process-type (quote cabal-repl))
  '(haskell-tags-on-save t))
+
+(defun connect-silo ()
+  (interactive)
+  (dired "/dalmahal@silo.soic.indiana.edu:/u/dalmahal"))
+
+(defun sudo-edit (&optional arg)
+  "Edit currently visited file as root.
+
+With a prefix ARG prompt for a file to visit.
+Will also prompt for a file to visit if current
+buffer is not visiting a file."
+  (interactive "P")
+  (if (or arg (not buffer-file-name))
+      (find-file (concat "/sudo:root@localhost:"
+                         (ido-read-file-name "Find file(as root): ")))
+    (find-alternate-file (concat "/sudo:root@localhost:" buffer-file-name))))
+
+(global-set-key (kbd "C-c C-r") 'sudo-edit)

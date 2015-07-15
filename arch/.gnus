@@ -27,7 +27,6 @@
       gmail-name "Deyaa (ضياء)"
       user-mail-address indiana-address
       user-full-name indiana-name
-      indiana-pk "Deyaaeldeen Almahallawi <dalmahal@indiana.edu>"
       gnus-select-method
       '(nnimap "gmail"
 	       (nnimap-address "imap.gmail.com")

@@ -15,9 +15,17 @@ all:
 	ln -s $(top)/.tmux.conf ~/.tmux.conf
 	ln -s $(top)/.Xresources ~/.Xresources
 	ln -s $(top)/.xinitrc ~/.xinitrc
+	ln -s $(top)/xmonad.hs ~/.xmonad/xmonad.hs
+	ln -s $(top)/config.fish ~/.config/fish/config.fish
 	sudo ln -s $(top)/00-keyboard.conf /etc/X11/xorg.conf.d/00-keyboard.conf
 	sudo ln -s $(top)/50-synaptics.conf /etc/X11/xorg.conf.d/50-synaptics.conf
 	sudo ln -s $(top)/jre.sh /etc/profile.d/jre.sh
+	sudo ln -s $(top)/emc /usr/local/bin/emc
 
 clean :
-	-sudo rm ~/.ssh/config ~/.bash_profile ~/.bashrc ~/.emacs ~/.gnus ~/.authinfo ~/.signature ~/.signature2 ~/.gitconfig ~/.tmux.conf ~/.Xresources ~/.xinitrc /etc/X11/xorg.conf.d/00-keyboard.conf /etc/X11/xorg.conf.d/50-synaptics.conf /etc/profile.d/jre.sh
+	-sudo rm -f ~/.ssh/config ~/.bash_profile ~/.bashrc ~/.emacs \
+	~/.gnus ~/.authinfo ~/.signature ~/.signature2 ~/.gitconfig  \
+	~/.tmux.conf ~/.Xresources ~/.xinitrc ~/.config/fish/config.fish \
+	~/.xmonad/xmonad.hs /etc/X11/xorg.conf.d/00-keyboard.conf \
+	/etc/X11/xorg.conf.d/50-synaptics.conf /etc/profile.d/jre.sh \
+	/usr/local/bin/emc

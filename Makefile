@@ -9,3 +9,4 @@ all:
 	cp arch/.signature2 soic/.signature2
 	cp arch/.gitconfig soic/.gitconfig
 	cp arch/.tmux.conf soic/.tmux.conf
+	cp arch/emc soic/emc

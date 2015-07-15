@@ -12,19 +12,19 @@ fi
 #   077 denies read and write access to other people.
 umask 077
 
-export PATH="$HOME/.cabal/bin:/u/parfunc/opt/bin:$PATH"
+export PATH="$HOME/bin:$HOME/.cabal/bin:/u/parfunc/opt/bin:$PATH"
+export LANG=en_US.UTF-8
 
 module load emacs/24.4 gcc/4.7.2 ghc/7.8.3 python/2.7.5 racket/6.1.1 git/1.8.5.6
 
 # for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
-HISTSIZE=2000
-HISTFILESIZE=4000
+HISTSIZE=32768
+HISTFILESIZE=32768
+#export HISTIGNORE="cd [a-zA-Z0-9_.*]*:mv [a-zA-Z0-9_.*]*:cp [a-zA-Z0-9_.*]*:.*"
 
 alias ls='ls --color=auto'
-PS1='[\u@\h \W]\$ '
-
-export LANG=en_US.UTF-8
-export PATH=$PATH:/home/deyaa/.cabal/bin
+export PS1="\u@\h \w\$ "
+export PROMPT_COMMAND="date"
 
 alias l='ls -lhFa'
 alias c='reset'

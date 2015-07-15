@@ -13,6 +13,7 @@ all:
 	ln -s $(top)/.signature2 ~/.signature2
 	ln -s $(top)/.gitconfig ~/.gitconfig
 	ln -s $(top)/.tmux.conf ~/.tmux.conf
+	ln -s $(top)/emc ~/bin/emc
 
 clean :
-	-rm ~/.ssh/config ~/.bash_profile ~/.bashrc ~/.emacs ~/.gnus ~/.authinfo ~/.signature ~/.gitconfig ~/.tmux.conf
+	-rm -f ~/.ssh/config ~/.bash_profile ~/.bashrc ~/.emacs ~/.gnus ~/.authinfo ~/.signature ~/.gitconfig ~/.tmux.conf ~/bin/emc

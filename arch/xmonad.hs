@@ -2,13 +2,12 @@ import XMonad
 
 import XMonad.Util.EZConfig
 import XMonad.Hooks.EwmhDesktops hiding (fullscreenEventHook)
-import XMonad.Actions.GridSelect
 
 
 main :: IO ()
 main = xmonad $ ewmh defaultConfig
          { modMask = mod4Mask
-         , terminal = "xterm -e tmux"
+         , terminal = "xterm -e tmux attach"
          }
          `additionalKeys`
          [((mod4Mask, xK_e), spawn "emc")

@@ -12,8 +12,12 @@ fi
 #   077 denies read and write access to other people.
 umask 077
 
-export PATH="$HOME/bin:$HOME/.cabal/bin:/u/parfunc/opt/bin:$PATH"
+export schmlUnderConstruction=1
+
+export PATH="$HOME/bin/bin:$HOME/.cabal/bin:/u/parfunc/opt/bin:$PATH"
 export LANG=en_US.UTF-8
+LD_LIBRARY_PATH=/u/dalmahal/lib/lib
+export LD_LIBRARY_PATH
 
 module load emacs/24.4 gcc/4.7.2 ghc/7.8.3 python/2.7.5 racket/6.1.1 git/1.8.5.6
 

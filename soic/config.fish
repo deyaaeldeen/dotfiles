@@ -1,4 +1,4 @@
-set --erase fish_greeting 
+set --erase fish_greeting
 # Path to your oh-my-fish.
 set fish_path $HOME/.oh-my-fish
 
@@ -23,48 +23,28 @@ function fish_right_prompt
 	  date
 	  set_color normal
 end
-	
-# Start X at login
-if status --is-login
-  if test -z "$DISPLAY" -a $XDG_VTNR = 1
-    exec startx -- -keeptty
-  end
-end
 
 set -x EDITOR "emc"
 
 umask 077
 
-set -x -g PATH $PATH /usr/local/bin /home/deyaa/.cabal/bin /usr/local/texlive/2014/bin/x86_64-linux
+set -x -g PATH /u/dalmahal/bin /u/dalmahal/.cabal/bin $HOME/bin /u/parfunc/opt/bin $PATH
 set -x -g LANG en_US.UTF-8
-set -x -g INFOPATH $INFOPATH /usr/local/texlive/2014/texmf-dist/doc/info
-set -x -g MANPATH $MANPATH /usr/local/texlive/2014/texmf-dist/doc/man
+set -x -g LD_LIBRARY_PATH /u/dalmahal/lib/lib
 
 # Schml compiler
 set -x schmlUnderConstruction 1
 
 balias l 'ls -lhFa'
 balias c 'reset'
-balias r 'sudo reboot'
 balias .. 'cd ..'
 balias ... 'cd ../../../'
 balias .... 'cd ../../../../'
 balias ..... 'cd ../../../../'
 balias .4 'cd ../../../../'
 balias .5 'cd ../../../../..'
-balias k "killall -9"
 balias h 'cd ~'
-balias hh 'history'
 balias rm 'rm -rf'
-balias silo "ssh -t silo '. ~/.bashrc; exec tmux a'"
-
-balias img 'sxiv'
-balias 'cdrom' 'sudo mount -a /dev/sr0' # pass the path to mount the cd in
-balias wrk 'cd /mnt/disk/Work/Indiana/gradual/'
-balias sd 'cd /mnt/disk/Study/Indiana'
-balias t 'cd /mnt/disk/Teaching'
-balias is "/mnt/disk/Study/Indiana/B522/./isabelle.sh"
-balias htop "sudo htop"
 
 balias gs "git status"
 balias gc "git commit -am"
@@ -73,21 +53,6 @@ balias gl "git pull"
 balias glg 'git log'
 balias gcn 'git clean -xfd'
 balias gdr 'git push origin :'
-
-balias p-s 'sudo pacman -S'      #install
-balias p-rs 'sudo pacman -Rs'    #remove plus unused dependencies
-balias p-scc 'sudo pacman -Scc'  #clean cache - all pkgs
-balias p-sc 'sudo pacman -Sc'    #clean cache - old pkgs only
-balias p-ss 'sudo pacman -Ss'    #query database
-balias p-qs 'sudo pacman -Qs'    #query installed only
-balias p-si 'sudo pacman -Si'    #pkg info
-balias p-qi 'sudo pacman -Qi'    #pkg more info
-balias p-qe 'sudo pacman -Qe'    #list explicitely installed pkgs
-balias p-ql 'sudo pacman -Ql'    #find pkg file list
-balias p-qo 'sudo pacman -Qo'    #/path/to/file   find owner
-balias p-sf 'sudo pacman -Sf'    #reinstall - for dep problem
-balias syu 'sudo pacman -Syu;aurget --deps -Syu' # system upgrade
-balias a-s 'aurget --deps -S'
 
 balias rakt 'racket -il xrepl'
 

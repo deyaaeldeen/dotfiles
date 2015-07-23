@@ -14,6 +14,7 @@ all:
 	ln -s $(top)/.gitconfig ~/.gitconfig
 	ln -s $(top)/.tmux.conf ~/.tmux.conf
 	ln -s $(top)/emc ~/bin/emc
+	ln -s $(top)/config.fish ~/.config/fish/config.fish
 
 clean :
-	-rm -f ~/.ssh/config ~/.bash_profile ~/.bashrc ~/.emacs ~/.gnus ~/.authinfo ~/.signature ~/.gitconfig ~/.tmux.conf ~/bin/emc
+	-rm -f ~/.ssh/config ~/.bash_profile ~/.bashrc ~/.emacs ~/.gnus ~/.authinfo ~/.signature ~/.signature2 ~/.gitconfig ~/.tmux.conf ~/bin/emc ~/.config/fish/config.fish

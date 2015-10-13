@@ -11,4 +11,5 @@ main = xmonad $ ewmh defaultConfig
          }
          `additionalKeys`
          [((mod4Mask, xK_e), spawn "emc")
+         ,((mod4Mask .|. shiftMask, xK_l), spawn "xlock -mode bat")
          ,((mod4Mask, xK_g), spawn "google-chrome-stable")]

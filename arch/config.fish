@@ -39,6 +39,7 @@ set -x -g PATH $PATH /usr/local/bin /home/deyaa/.cabal/bin /usr/local/texlive/20
 set -x -g LANG en_US.UTF-8
 set -x -g INFOPATH $INFOPATH /usr/local/texlive/2014/texmf-dist/doc/info
 set -x -g MANPATH $MANPATH /usr/local/texlive/2014/texmf-dist/doc/man
+set -x -g WINEPREFIX /mnt/disk/.wine
 
 # Schml compiler
 set -x schmlUnderConstruction 1
@@ -56,7 +57,8 @@ balias k "killall -9"
 balias h 'cd ~'
 balias hh 'history'
 balias rm 'rm -rf'
-balias silo "ssh -t silo '. ~/.bashrc; exec tmux a'"
+balias silo "ssh -t silo '. ~/.bashrc; exec tmux attach'"
+balias schml "ssh -t silo '. ~/.bashrc; exec fish'"
 
 balias img 'sxiv'
 balias 'cdrom' 'sudo mount -a /dev/sr0' # pass the path to mount the cd in
@@ -65,6 +67,13 @@ balias sd 'cd /mnt/disk/Study/Indiana'
 balias t 'cd /mnt/disk/Teaching'
 balias is "/mnt/disk/Study/Indiana/B522/./isabelle.sh"
 balias htop "sudo htop"
+balias kindle "wine ~/.wine/drive_c/Program\ Files\ \(x86\)/Amazon/Kindle/Kindle For PC/Kindle.exe"
+balias wrd "wine /mnt/disk/.wine/drive_c/Program\ Files/Microsoft\ Office/Office14/WINWORD.EXE"
+balias nwrk "sudo systemctl restart netctl"
+balias vb "sudo modprobe vboxdrv; virtualbox"
+balias bat "upower -i (upower -e | grep 'BAT') | grep -E \"state|to\ full|percentage\""
+balias sz "du -sh"
+balias sound "amixer set Master toggle"
 
 balias gs "git status"
 balias gc "git commit -am"
@@ -86,8 +95,8 @@ balias p-qe 'sudo pacman -Qe'    #list explicitely installed pkgs
 balias p-ql 'sudo pacman -Ql'    #find pkg file list
 balias p-qo 'sudo pacman -Qo'    #/path/to/file   find owner
 balias p-sf 'sudo pacman -Sf'    #reinstall - for dep problem
-balias syu 'sudo pacman -Syu;aurget --deps -Syu' # system upgrade
-balias a-s 'aurget --deps -S'
+balias syu 'sudo pacman -Syu;aurget --noconfirm --noedit --deps -Syu' # system upgrade
+balias a-s 'aurget --noconfirm --noedit --deps -S'
 
 balias rakt 'racket -il xrepl'
 

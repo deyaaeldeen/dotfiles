@@ -1,0 +1,11 @@
+"xvkbd -no-jump-pointer -xsendevent -text "\D1`xsel`" 2>/dev/null"
+    F12
+# Increase volume
+"amixer set Master 5%+"
+   XF86AudioRaiseVolume
+
+"amixer set Master 5%-"
+   XF86AudioLowerVolume
+
+"amixer set Master toggle"
+   XF86AudioMute

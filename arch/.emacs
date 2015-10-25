@@ -469,8 +469,7 @@
 
 (use-package workgroups2
   :ensure t
-  :init
-  (workgroups-mode 1)
+  :config
   (wg-find-session-file "~/.emacs_workgroups")
   (setq wg-prefix-key (kbd "C-c x")
 	wg-mode-line-decor-left-brace "["

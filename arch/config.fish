@@ -74,6 +74,7 @@ balias vb "sudo modprobe vboxdrv; virtualbox"
 balias bat "upower -i (upower -e | grep 'BAT') | grep -E \"state|to\ full|percentage\""
 balias sz "du -sh"
 balias sound "amixer set Master toggle"
+balias disk "ncdu"
 
 balias gs "git status"
 balias gc "git commit -am"
@@ -104,33 +105,33 @@ function extract
      if test -e $argv[1]
          switch $argv[1]
          case '*.tar.bz2'
-	      tar xjf $argv[1]
+	      tar xjf $argv[1] -C $argv[2]
          case '*.tar.gz'
-	      tar xzf $argv[1]
+	      tar xzf $argv[1] -C $argv[2]
          case '*.bz2'
 	      bunzip2 $argv[1]
          case '*.rar'
-	      rar x $argv[1]
+	     unrar e $argv[1] $argv[2]
          case '*.gz'
 	      gunzip $argv[1]
          case '*.tar'
-	      tar xf $argv[1]
+	      tar xf $argv[1] -C $argv[2]
          case '*.tbz2'
-	      tar xjf $argv[1]
+	      tar xjf $argv[1] -C $argv[2]
          case '*.tgz'
-	      tar xzf $argv[1]
+	      tar xzf $argv[1] -C $argv[2]
          case '*.zip'
-	      unzip $argv[1]
+	      unzip $argv[1] -d $argv[2]
          case '*.Z'
 	      uncompress $argv[1]
          case '*.7z'
 	      7z x $argv[1]
          case '*.tar.xz'
-	      tar -xvJf $argv[1]
+	      tar -xvJf $argv[1] -C $argv[2]
          case '*'
 	      echo "$argv[1] cannot be extracted via extract"
 	 end
-	 switch $argv[2]
+	 switch $argv[3]
 	 case 1
 	    rm -rf $argv[1]
 	 end

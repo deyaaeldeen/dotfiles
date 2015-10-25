@@ -55,6 +55,12 @@
   :ensure t
   :defer t)
 
+(use-package ace-window
+  :ensure t
+  :bind ("C-x x" . ace-window)
+  :init
+  (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)))
+
 (use-package auctex
   :ensure auctex
   :defer t)
@@ -82,21 +88,7 @@
 
 (use-package bbdb
   :ensure t
-  :defer t
-  :config
-  (setq
-   bbdb-use-pop-up nil
-   bbdb-offer-save 1                        ;; 1 means save-without-asking
-   bbdb-always-add-address t                ;; add new addresses to existing...
-   bbdb-canonicalize-redundant-nets-p t     ;; x@foo.bar.cx => x@bar.cx
-   bbdb-completion-type nil                 ;; complete on anything
-   bbdb-complete-name-allow-cycling t       ;; cycle through matches
-   bbbd-message-caching-enabled t           ;; be fast
-   bbdb-use-alternate-names t               ;; use AKA
-   ;; auto-create addresses from mail
-   bbdb/mail-auto-create-p 'bbdb-ignore-some-messages-hook
-   bbdb-ignore-some-messages-alist
-   '(( "From" . "no.?reply\\|DAEMON\\|daemon\\|facebookmail\\|twitter"))))
+  :defer t)
 
 (use-package bibtex
   :ensure t
@@ -105,6 +97,14 @@
   :config
   (setq bibtex-align-at-equal-sign t)
   (add-hook 'bibtex-mode-hook (lambda () (set-fill-column 120))))
+
+(use-package buffer-move
+  :ensure t
+  :init
+  (global-set-key (kbd "<C-S-up>")     'buf-move-up)
+  (global-set-key (kbd "<C-S-down>")   'buf-move-down)
+  (global-set-key (kbd "<C-S-left>")   'buf-move-left)
+  (global-set-key (kbd "<C-S-right>")  'buf-move-right))
 
 (use-package cmake-mode
   :ensure t
@@ -125,6 +125,12 @@
   :ensure t
   :defer t)
 
+(use-package eimp
+  :ensure t
+  :defer t
+  :config
+  (add-hook 'image-mode-hook 'eimp-mode))
+
 (use-package elfeed
   :ensure t
   :defer t
@@ -140,6 +146,7 @@
 	  "http://www.reddit.com/r/emacs/.rss"
 	  "http://www.reddit.com/r/llvm/.rss"
 	  "http://www.reddit.com/r/cpp/.rss"
+	  "http://www.reddit.com/r/worldnews/.rss"
 	  )))
 
 (use-package emamux
@@ -191,9 +198,12 @@
   :init
   (hook-into-modes 'flycheck-mode '(prog-mode-hook))
   :config
+  (flycheck-add-mode 'html-tidy 'html-mode)
   (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc racket)
 		flyspell-issue-message-flag nil
-		flycheck-display-errors-delay .2))
+		flycheck-display-errors-delay .2
+		flycheck-check-syntax-automatically '(save mode-enabled))
+  (global-flycheck-mode t))
 
 (use-package flyspell
   :ensure t
@@ -218,7 +228,8 @@
 
 (use-package google-translate
   :ensure t
-  :defer t)
+  :defer t
+  :bind ("C-c t" . google-translate-at-point))
 
 (use-package gscholar-bibtex
   :ensure t
@@ -353,6 +364,65 @@
   :ensure t
   :defer t)
 
+(use-package pdf-tools
+  :ensure t
+  :init
+  (add-hook 'pdf-view-mode-hook 'pdf-tools-enable-minor-modes)
+  :mode (("\\.pdf$" . pdf-view-mode))
+  :config
+  (setq pdf-view-display-size 'fit-width
+  	pdf-view-continuous t
+  	pdf-cache-image-limit 64
+  	pdf-cache-prefetch-delay 0.5
+  	pdf-view-image-relief 0
+  	pdf-view-bounding-box-margin 0.05
+  	pdf-view-use-scaling t
+  	pdf-outline-buffer-indent 2
+  	pdf-outline-display-labels t ; the outline should display labels instead of page numbers.
+  	pdf-outline-enable-imenu t
+  	pdf-outline-imenu-use-flat-menus nil))
+
+(use-package multi-term
+  :ensure t
+  :init
+  (setq multi-term-program "/bin/fish")
+  :bind ("C-c z" . multi-term)
+  :config
+  (defun term-send-Mright () (interactive) (term-send-raw-string "\e[1;3C"))
+  (defun term-send-Mleft  () (interactive) (term-send-raw-string "\e[1;3D"))
+  (defun term-send-f11 () (interactive) (term-send-raw-string "\e[23~"))
+  (defun term-send-f12 () (interactive) (term-send-raw-string "\e[24~"))
+  (setq term-buffer-maximum-size 10000
+	term-unbind-key-list '("C-z" "C-x" "C-c" "C-h" "C-y" "<ESC>")
+	term-bind-key-alist '(("<f12>" . term-send-f12)
+			      ("<f11>" . term-send-f11)
+			      ("<M-right>" . term-send-Mright)
+			      ("<M-left>" . term-send-Mleft)
+			      ("M-]" . multi-term-next)
+			      ("M-[" . multi-term-prev)
+			      ("C-c C-c" . term-interrupt-subjob)
+			      ("C-c C-e" . term-send-esc)
+			      ("C-p" . previous-line)
+			      ("C-n" . next-line)
+			      ("C-s" . isearch-forward)
+			      ("C-r" . isearch-backward)
+			      ("C-c C-j" . term-line-mode)
+			      ("C-c C-k" . term-char-mode)
+			      ("C-m" . term-send-return)
+			      ("C-y" . term-paste)
+			      ("M-f" . term-send-forward-word)
+			      ("M-b" . term-send-backward-word)
+			      ("M-o" . term-send-backspace)
+			      ("M-p" . term-send-up)
+			      ("M-n" . term-send-down)
+			      ("M-M" . term-send-forward-kill-word)
+			      ("M-N" . term-send-backward-kill-word)
+			      ("<C-backspace>" . term-send-backward-kill-word)
+			      ("M-r" . term-send-reverse-search-history)
+			      ("M-," . term-send-raw)
+			      ("M-." . comint-dynamic-complete)))
+  (setq truncate-lines 1))
+
 (use-package python-mode
   :ensure t
   :defer t)
@@ -397,6 +467,18 @@
   :ensure t
   :defer t)
 
+(use-package workgroups2
+  :ensure t
+  :config
+  (wg-find-session-file "~/.emacs_workgroups")
+  (setq wg-prefix-key (kbd "C-c x")
+	wg-mode-line-decor-left-brace "["
+	wg-mode-line-decor-right-brace "]"  ; how to surround it
+	wg-mode-line-decor-divider ":"
+	wg-mode-line-display-on t
+	wg-flag-modified t)
+  :bind ("C-x C-l" . wg-reload-session))
+
 (use-package writegood-mode
   :ensure t
   :defer t)
@@ -422,6 +504,7 @@
 		   TeX-save-query nil
 		   TeX-PDF-mode t)
 	     (setq-default TeX-master nil)
+	     (setq TeX-source-correlate-method 'synctex)
 	     (turn-on-auto-fill)
 	     (latex-preview-pane-enable)
 	     (define-key LaTeX-mode-map (kbd "C-c C-k") '(lambda () (interactive)
@@ -431,6 +514,10 @@
 (add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
 (add-hook 'LaTeX-mode-hook 'TeX-source-correlate-mode)
 (add-hook 'LaTeX-mode-hook 'LaTeX-preview-setup)
+
+(use-package unicode-fonts
+  :ensure t
+  :init (unicode-fonts-setup))
 
 (show-paren-mode 1)
 (defun match-paren (arg)
@@ -457,7 +544,6 @@
       scroll-conservatively 10000
       inhibit-splash-screen t
       initial-scratch-message nil
-					;initial-major-mode 'gnus
       echo-keystrokes 0.1
       use-dialog-box nil
       visible-bell t
@@ -548,3 +634,22 @@ buffer is not visiting a file."
     (find-alternate-file (concat "/sudo:root@localhost:" buffer-file-name))))
 
 (global-set-key (kbd "C-c C-r") 'sudo-edit)
+
+(defun window-split-toggle ()
+  "Toggle between horizontal and vertical split with two windows."
+  (interactive)
+  (if (> (length (window-list)) 2)
+      (error "Can't toggle with more than 2 windows!")
+    (let ((func (if (window-full-height-p)
+                    #'split-window-vertically
+                  #'split-window-horizontally)))
+      (delete-other-windows)
+      (funcall func)
+      (save-selected-window
+        (other-window 1)
+        (switch-to-buffer (other-buffer))))))
+
+(global-set-key (kbd "C-x t") 'window-split-toggle)
+
+(setq browse-url-browser-function 'browse-url-generic
+      browse-url-generic-program "google-chrome-stable")

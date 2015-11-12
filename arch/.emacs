@@ -241,18 +241,17 @@
 (use-package haskell-mode
   :ensure t
   :defer t
-  :init
-  (progn
-    (add-hook 'haskell-mode-hook #'turn-on-haskell-indentation)
-    (add-hook 'haskell-mode-hook #'turn-on-haskell-doc-mode)
-    (add-hook 'haskell-mode-hook '(lambda () (setq tab-width 2))))
   :config
   (progn
+    (add-hook 'haskell-mode-hook #'turn-on-haskell-doc-mode)
+    (add-hook 'haskell-mode-hook '(lambda () (setq tab-width 2)))
     (custom-set-variables
+     '(haskell-process-suggest-hoogle-imports t)
      '(haskell-process-suggest-remove-import-lines t)
      '(haskell-process-auto-import-loaded-modules t)
      '(haskell-process-log t)
-     '(haskell-tags-on-save t))
+     '(haskell-tags-on-save t)
+     '(haskell-process-type 'cabal-repl))
     (define-key haskell-mode-map (kbd "C-c C-l")
       'haskell-process-load-or-reload)
     (define-key haskell-mode-map (kbd "C-c C-z")
@@ -278,8 +277,7 @@
          (define-key haskell-cabal-mode-map (kbd "C-c C-c")
            'haskell-process-cabal-build)
          (define-key haskell-cabal-mode-map (kbd "C-c c")
-           'haskell-process-cabal)))
-    (custom-set-variables '(haskell-process-type 'cabal-repl))))
+           'haskell-process-cabal)))))
 
 (use-package helm-bibtex
   :ensure t

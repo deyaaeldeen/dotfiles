@@ -22,6 +22,7 @@ all:
 	sudo ln -s $(top)/50-synaptics.conf /etc/X11/xorg.conf.d/50-synaptics.conf
 	sudo ln -s $(top)/jre.sh /etc/profile.d/jre.sh
 	sudo ln -s $(top)/emc /usr/local/bin/emc
+	sudo ln -s $(top)/printers.conf /etc/cups/printers.conf
 
 clean :
 	-sudo rm -f ~/.ssh/config ~/.bash_profile ~/.bashrc ~/.emacs \
@@ -29,4 +30,4 @@ clean :
 	~/.tmux.conf ~/.Xresources ~/.xinitrc ~/.config/fish/config.fish \
 	~/.xmonad/xmonad.hs /etc/X11/xorg.conf.d/00-keyboard.conf \
 	/etc/X11/xorg.conf.d/50-synaptics.conf /etc/profile.d/jre.sh \
-	/usr/local/bin/emc ~/.xbindkeysrc
+	/usr/local/bin/emc ~/.xbindkeysrc /etc/cups/printers.conf

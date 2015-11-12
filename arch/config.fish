@@ -33,7 +33,7 @@ end
 
 set -x EDITOR "emc"
 
-umask 077
+umask 022
 
 set -x -g PATH $PATH /usr/local/bin /home/deyaa/.cabal/bin /usr/local/texlive/2014/bin/x86_64-linux
 set -x -g LANG en_US.UTF-8
@@ -57,8 +57,8 @@ balias k "killall -9"
 balias h 'cd ~'
 balias hh 'history'
 balias rm 'rm -rf'
-balias silo "ssh -t silo '. ~/.bashrc; exec tmux attach'"
-balias schml "ssh -t silo '. ~/.bashrc; exec fish'"
+balias silo "ssh -t -X silo '. ~/.bashrc; exec tmux attach'"
+balias schml "ssh -t -X silo '. ~/.bashrc; exec fish'"
 
 balias img 'sxiv'
 balias 'cdrom' 'sudo mount -a /dev/sr0' # pass the path to mount the cd in
@@ -66,15 +66,16 @@ balias wrk 'cd /mnt/disk/Work/Indiana/gradual/'
 balias sd 'cd /mnt/disk/Study/Indiana'
 balias t 'cd /mnt/disk/Teaching'
 balias is "/mnt/disk/Study/Indiana/B522/./isabelle.sh"
-balias htop "sudo htop"
 balias kindle "wine ~/.wine/drive_c/Program\ Files\ \(x86\)/Amazon/Kindle/Kindle For PC/Kindle.exe"
 balias wrd "wine /mnt/disk/.wine/drive_c/Program\ Files/Microsoft\ Office/Office14/WINWORD.EXE"
+balias pwr "wine /mnt/disk/.wine/drive_c/Program\ Files/Microsoft\ Office/Office14/POWERPNT.EXE"
 balias nwrk "sudo systemctl restart netctl"
 balias vb "sudo modprobe vboxdrv; virtualbox"
 balias bat "upower -i (upower -e | grep 'BAT') | grep -E \"state|to\ full|percentage\""
 balias sz "du -sh"
 balias sound "amixer set Master toggle"
 balias disk "ncdu"
+balias ltx "umask 022;sudo tlmgr update --all"
 
 balias gs "git status"
 balias gc "git commit -am"

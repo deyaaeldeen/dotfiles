@@ -20,7 +20,6 @@
 ;;; Code:
 
 (require 'cl)
-
 (setq user-full-name "Deyaaeldeen Almahallawi"
       user-mail-address "dalmahal@indiana.edu"
       package-enable-at-startup nil)
@@ -147,7 +146,7 @@
 	  "http://www.reddit.com/r/llvm/.rss"
 	  "http://www.reddit.com/r/cpp/.rss"
 	  "http://www.reddit.com/r/worldnews/.rss"
-	  )))
+	  "http://www.reddit.com/r/bloomington/.rss")))
 
 (use-package emamux
   :ensure t
@@ -236,14 +235,20 @@
   :bind ("C-c g" . gscholar-bibtex)
   :config
   (setq gscholar-bibtex-default-source "Google Scholar"
-	gscholar-bibtex-database-file "/mnt/disk/Work/papers/refs.bib"))
+	gscholar-bibtex-database-file "/mnt/disk/Work/Indiana/gradual/biblib/library.bib"))
+
+(use-package hi2
+  :ensure t
+  :defer t)
 
 (use-package haskell-mode
   :ensure t
   :defer t
   :config
   (progn
+    (add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
     (add-hook 'haskell-mode-hook #'turn-on-haskell-doc-mode)
+    ;; (add-hook 'haskell-mode-hook 'turn-on-hi2)
     (add-hook 'haskell-mode-hook '(lambda () (setq tab-width 2)))
     (custom-set-variables
      '(haskell-process-suggest-hoogle-imports t)
@@ -251,7 +256,7 @@
      '(haskell-process-auto-import-loaded-modules t)
      '(haskell-process-log t)
      '(haskell-tags-on-save t)
-     '(haskell-process-type 'cabal-repl))
+     '(haskell-process-type 'stack-ghci))
     (define-key haskell-mode-map (kbd "C-c C-l")
       'haskell-process-load-or-reload)
     (define-key haskell-mode-map (kbd "C-c C-z")
@@ -284,7 +289,7 @@
   :defer t
   :bind ("C-c b" . helm-bibtex)
   :config
-  (setq helm-bibtex-bibliography "/mnt/disk/Work/papers/refs.bib"))
+  (setq helm-bibtex-bibliography "/mnt/disk/Work/Indiana/gradual/biblib/library.bib"))
 
 (use-package ido
   :init
@@ -316,11 +321,11 @@
   :ensure t
   :defer t)
 
-(use-package latex-pretty-symbols
+(use-package latex-preview-pane
   :ensure t
   :defer t)
 
-(use-package latex-preview-pane
+(use-package latex-pretty-symbols
   :ensure t
   :defer t)
 
@@ -433,9 +438,7 @@
   :ensure t
   :bind ("C-x C-r" . recentf-open-files)
   :init
-  (recentf-mode 1)
-  :config
-  (setq recentf-max-menu-items 300))
+  (recentf-mode 1))
 
 (use-package saveplace
   :init
@@ -467,6 +470,8 @@
 
 (use-package workgroups2
   :ensure t
+  :init
+  (wg-reload-session) ;; tricking it to load
   :config
   (wg-find-session-file "~/.emacs_workgroups")
   (setq wg-prefix-key (kbd "C-c x")
@@ -475,6 +480,7 @@
 	wg-mode-line-decor-divider ":"
 	wg-mode-line-display-on t
 	wg-flag-modified t)
+  (workgroups-mode 1)
   :bind ("C-x C-l" . wg-reload-session))
 
 (use-package writegood-mode
@@ -486,32 +492,38 @@
 ;; 	     (shell-command-to-string "agda-mode locate")))
 ;; (require 'agda-input)
 
-(require 'auto-complete-auctex)
-(add-hook 'LaTeX-mode-hook
-	  '(lambda ()
-	     (require 'ac-math)
-	     (add-to-list 'ac-modes 'latex-mode)
-	     (setq ac-sources (append '(ac-source-math-unicode
-					ac-source-math-latex
-					ac-source-latex-commands)
-				      ac-sources)
-		   fill-column 72
-		   compile-command "latexmk -pdf"
-		   TeX-auto-save t
-		   TeX-parse-self t
-		   TeX-save-query nil
-		   TeX-PDF-mode t)
-	     (setq-default TeX-master nil)
-	     (setq TeX-source-correlate-method 'synctex)
-	     (turn-on-auto-fill)
-	     (latex-preview-pane-enable)
-	     (define-key LaTeX-mode-map (kbd "C-c C-k") '(lambda () (interactive)
-							   (save-window-excursion
-							     (recompile))))))
-(add-hook 'LaTeX-mode-hook 'turn-on-reftex)
-(add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
-(add-hook 'LaTeX-mode-hook 'TeX-source-correlate-mode)
-(add-hook 'LaTeX-mode-hook 'LaTeX-preview-setup)
+(use-package tex-site
+  :config
+  (require 'auto-complete-auctex)
+  (add-hook 'LaTeX-mode-hook
+	    '(lambda ()
+	       (require 'ac-math)
+	       (add-to-list 'ac-modes 'latex-mode)
+	       (setq ac-sources (append '(ac-source-math-unicode
+					  ac-source-math-latex
+					  ac-source-latex-commands)
+					ac-sources)
+		     fill-column 72
+		     compile-command "latexmk -pdf"
+		     TeX-auto-save t
+		     TeX-parse-self t
+		     TeX-save-query nil
+		     TeX-PDF-mode t)
+	       (setq TeX-source-correlate-method 'synctex)
+	       (turn-on-auto-fill)
+	       (define-key LaTeX-mode-map (kbd "C-c C-k") '(lambda () (interactive)
+							     (save-window-excursion
+							       (recompile))))
+	       (require 'auctex-latexmk nil 'noerror)
+	       (auctex-latexmk-setup)
+	       (setq-default TeX-master nil)
+	       (setq TeX-command-default "LatexMk"
+		     auctex-latexmk-inherit-TeX-PDF-mode t)
+	       (setq-default TeX-master nil)))
+  (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
+  (add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
+  (add-hook 'LaTeX-mode-hook 'TeX-source-correlate-mode)
+  (add-hook 'LaTeX-mode-hook 'LaTeX-preview-setup))
 
 (use-package unicode-fonts
   :ensure t

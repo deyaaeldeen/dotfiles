@@ -20,6 +20,7 @@
 ;;; Code:
 
 (require 'cl)
+(require 'seq) ;; required for emacs25
 (setq user-full-name "Deyaaeldeen Almahallawi"
       user-mail-address "dalmahal@indiana.edu"
       package-enable-at-startup nil)
@@ -335,21 +336,7 @@
 
 (use-package magit
   :ensure t
-  :bind ("C-x C-g" . magit-status)
-  :config
-  (defun add-PR-fetch ()
-    "If refs/pull is not defined on a GH repo, define it."
-    (let ((fetch-address
-	   "+refs/pull/*/head:refs/pull/origin/*"))
-      (unless (member
-	       fetch-address
-	       (magit-get-all "remote" "origin" "fetch"))
-	(when (string-match
-	       "github" (magit-get "remote" "origin" "url"))
-	  (magit-git-string
-	   "config" "--add" "remote.origin.fetch"
-	   fetch-address)))))
-  (add-hook 'magit-mode-hook #'add-PR-fetch))
+  :bind ("C-x C-g" . magit-status))
 
 (use-package markdown-mode
   :ensure t
@@ -487,10 +474,10 @@
   :ensure t
   :defer t)
 
-;; (setq agda2-include-dirs (list "." (expand-file-name "~/agda-stdlib-0.8.1/src")))
-;; (load-file (let ((coding-system-for-read 'utf-8))
-;; 	     (shell-command-to-string "agda-mode locate")))
-;; (require 'agda-input)
+(setq agda2-include-dirs (list "." (expand-file-name "~/agda-stdlib-0.11/src")))
+(load-file (let ((coding-system-for-read 'utf-8))
+	     (shell-command-to-string "agda-mode locate")))
+(require 'agda-input)
 
 (use-package tex-site
   :config
@@ -528,6 +515,10 @@
 (use-package unicode-fonts
   :ensure t
   :init (unicode-fonts-setup))
+
+(use-package zoom-window
+  :ensure t
+  :bind ("C-x d" . zoom-window-zoom))
 
 (show-paren-mode 1)
 (defun match-paren (arg)
@@ -578,6 +569,24 @@
 (global-set-key (kbd "C-c q") 'auto-fill-mode)
 (global-set-key (kbd "C-c i") '(lambda () (interactive) (indent-region (point-min) (point-max))))
 
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(custom-safe-themes
+   (quote
+    ("4cf3221feff536e2b3385209e9b9dc4c2e0818a69a1cdb4b522756bcdf4e00a4" "4aee8551b53a43a883cb0b7f3255d6859d766b6c5e14bcb01bed572fcbef4328" "bb08c73af94ee74453c90422485b29e5643b73b05e8de029a6909af6a3fb3f58" "d44939ef462b7efb9bb5739f2dd50b03ac9ecf98c4df6578edcf145d6a2d188d" "1b8d67b43ff1723960eb5e0cba512a2c7a2ad544ddb2533a90101fd1852b426e" "82d2cac368ccdec2fcc7573f24c3f79654b78bf133096f9b40c20d97ec1d8016" "06f0b439b62164c6f8f84fdda32b62fb50b6d00e8b01c2208e55543a6337433a" "282606e51ef2811142af5068bd6694b7cf643b27d63666868bc97d04422318c1" default)))
+ '(haskell-process-auto-import-loaded-modules t)
+ '(haskell-process-log t)
+ '(haskell-process-suggest-remove-import-lines t)
+ '(haskell-process-type (quote cabal-repl))
+ '(haskell-tags-on-save t)
+ '(package-selected-packages
+   (quote
+    (magit zoom-window image+ zenburn-theme writegood-mode workgroups2 warm-night-theme w3m use-package unicode-fonts tidy sml-mode smex screenshot scala-mode2 request racket-mode python-mode pdf-tools paradox multi-term mongo-elnode markdown-mode llvm-mode latex-preview-pane latex-pretty-symbols latex-math-preview langtool jabber image-dired+ ido-ubiquitous hi2 helm-hoogle helm-git helm-bibtex gscholar-bibtex google-translate google-c-style google go-mode git-rebase-mode git-commit-mode gist flycheck-google-cpplint flx-isearch flx-ido fill-column-indicator erlang emamux elfeed eimp ebib dired+ color-theme-sanityinc-tomorrow color-theme-sanityinc-solarized color-theme cmake-mode buffer-move bongo bbdb autodisass-llvm-bitcode auto-complete-nxml auto-complete-auctex auctex-latexmk ace-window ac-slime ac-math ac-haskell-process)))
+ '(revert-without-query (quote (".*"))))
+
 ;; disable some annoying keychords
 (global-unset-key "\^z")
 (global-unset-key "\C-x\C-z")
@@ -613,19 +622,7 @@
  '(font-lock-preprocessor-face ((t (:italic nil :foreground "CornFlowerBlue"))))
  '(font-lock-reference-face ((t (:foreground "DodgerBlue"))))
  '(font-lock-string-face ((t (:foreground "Aquamarine4")))))
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(custom-safe-themes
-   (quote
-    ("4cf3221feff536e2b3385209e9b9dc4c2e0818a69a1cdb4b522756bcdf4e00a4" "4aee8551b53a43a883cb0b7f3255d6859d766b6c5e14bcb01bed572fcbef4328" "bb08c73af94ee74453c90422485b29e5643b73b05e8de029a6909af6a3fb3f58" "d44939ef462b7efb9bb5739f2dd50b03ac9ecf98c4df6578edcf145d6a2d188d" "1b8d67b43ff1723960eb5e0cba512a2c7a2ad544ddb2533a90101fd1852b426e" "82d2cac368ccdec2fcc7573f24c3f79654b78bf133096f9b40c20d97ec1d8016" "06f0b439b62164c6f8f84fdda32b62fb50b6d00e8b01c2208e55543a6337433a" "282606e51ef2811142af5068bd6694b7cf643b27d63666868bc97d04422318c1" default)))
- '(haskell-process-auto-import-loaded-modules t)
- '(haskell-process-log t)
- '(haskell-process-suggest-remove-import-lines t)
- '(haskell-process-type (quote cabal-repl))
- '(haskell-tags-on-save t))
+
 
 (defun connect-silo ()
   (interactive)

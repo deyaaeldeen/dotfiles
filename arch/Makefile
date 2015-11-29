@@ -18,6 +18,7 @@ all:
 	ln -s $(top)/xmonad.hs ~/.xmonad/xmonad.hs
 	ln -s $(top)/config.fish ~/.config/fish/config.fish
 	ln -s $(top)/.xbindkeysrc ~/.xbindkeysrc
+	ln -s $(top)/.latexmkrc ~/.latexmkrc
 	sudo ln -s $(top)/00-keyboard.conf /etc/X11/xorg.conf.d/00-keyboard.conf
 	sudo ln -s $(top)/50-synaptics.conf /etc/X11/xorg.conf.d/50-synaptics.conf
 	sudo ln -s $(top)/jre.sh /etc/profile.d/jre.sh
@@ -30,4 +31,5 @@ clean :
 	~/.tmux.conf ~/.Xresources ~/.xinitrc ~/.config/fish/config.fish \
 	~/.xmonad/xmonad.hs /etc/X11/xorg.conf.d/00-keyboard.conf \
 	/etc/X11/xorg.conf.d/50-synaptics.conf /etc/profile.d/jre.sh \
-	/usr/local/bin/emc ~/.xbindkeysrc /etc/cups/printers.conf
+	/usr/local/bin/emc ~/.xbindkeysrc /etc/cups/printers.conf \
+	~/.latexmkrc

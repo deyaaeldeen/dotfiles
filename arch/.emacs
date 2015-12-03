@@ -419,7 +419,9 @@
 
 (use-package racket-mode
   :ensure t
-  :defer t)
+  :defer t
+  :config
+  (global-eldoc-mode 0))
 
 (use-package recentf
   :ensure t

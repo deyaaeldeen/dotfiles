@@ -1,4 +1,4 @@
-;;; .gnus -- Emacs configuration
+;;; .emacs -- Emacs configuration
 
 ;; Author: Deyaaeldeen Almahallawi
 
@@ -24,6 +24,9 @@
 (setq user-full-name "Deyaaeldeen Almahallawi"
       user-mail-address "dalmahal@indiana.edu"
       package-enable-at-startup nil)
+
+(defconst ref-bib "~/Dropbox/bib/library.bib")
+(defconst ref-lib "~/Dropbox/bib/lib/")
 
 (require 'package)
 (add-to-list 'package-archives
@@ -147,7 +150,8 @@
 	  "http://www.reddit.com/r/llvm/.rss"
 	  "http://www.reddit.com/r/cpp/.rss"
 	  "http://www.reddit.com/r/worldnews/.rss"
-	  "http://www.reddit.com/r/bloomington/.rss")))
+	  "http://www.reddit.com/r/bloomington/.rss"
+	  "http://hnapp.com/rss?q=type%3Ajob%20-senior")))
 
 (use-package emamux
   :ensure t
@@ -220,7 +224,7 @@
   (setq gist-view-gist t))
 
 (use-package gnus
-  :bind ("C-c s" . gnus))
+  :bind (("C-c s" . gnus) ("C-c c" . browse-url)))
 
 (use-package google-c-style
   :ensure t
@@ -236,7 +240,14 @@
   :bind ("C-c g" . gscholar-bibtex)
   :config
   (setq gscholar-bibtex-default-source "Google Scholar"
-	gscholar-bibtex-database-file "/mnt/disk/Work/Indiana/gradual/biblib/library.bib"))
+	gscholar-bibtex-database-file ref-bib))
+
+(use-package guide-key
+  :ensure t
+  :init
+  (guide-key-mode 1)
+  :config
+  (setq guide-key/guide-key-sequence t))
 
 (use-package hi2
   :ensure t
@@ -290,7 +301,10 @@
   :defer t
   :bind ("C-c b" . helm-bibtex)
   :config
-  (setq helm-bibtex-bibliography "/mnt/disk/Work/Indiana/gradual/biblib/library.bib"))
+  (setq helm-bibtex-bibliography ref-bib
+	helm-bibtex-library-path ref-lib)
+  ;; (setq helm-bibtex-pdf-open-function 'org-open-file)
+  (setq helm-bibtex-notes-path "~/Dropbox/bib/helm-bibtex-notes"))
 
 (use-package ido
   :init
@@ -349,6 +363,38 @@
     (let ((preferred-markdown-impl "peg-markdown"))
       (when (executable-find preferred-markdown-impl)
         (setq markdown-command preferred-markdown-impl)))))
+
+(use-package nyan-mode
+  :ensure t
+  :init (nyan-mode))
+
+(use-package org
+  :config
+  (require 'org-ref)
+  (setq org-support-shift-select t
+	org-completion-use-ido t
+	org-src-fontify-natively t)
+  (setq org-confirm-babel-evaluate nil)
+  (setq org-ditaa-jar-path "/usr/share/java/ditaa/ditaa-0_9.jar")
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((ditaa . t))))
+
+(use-package org-ref
+  :ensure t
+  :bind (("<f10>" . org-ref-open-bibtex-notes)
+	 ("<f11>" . org-ref-open-bibtex-pdf)
+	 ("<f12>" . org-ref-open-in-browser))
+  :config
+  ;; see org-ref for use of these variables
+  (setq org-ref-bibliography-notes "~/Dropbox/bib/notes.org"
+	org-ref-default-bibliography (cons ref-bib '())
+	org-ref-pdf-directory ref-lib)
+  ;; optional but very useful libraries in org-ref
+  (require 'doi-utils)
+  (require 'org-ref-pdf)
+  (require 'org-ref-bibtex)
+  (require 'org-ref-arxiv))
 
 (use-package paradox
   :ensure t
@@ -442,6 +488,13 @@
   :ensure t
   :defer t)
 
+(use-package smart-mode-line
+  :ensure t
+  :init
+  (setq sml/no-confirm-load-theme t
+	sml/name-width 10)
+  (sml/setup))
+
 (use-package smex
   :ensure t
   :demand t
@@ -476,10 +529,10 @@
   :ensure t
   :defer t)
 
-(setq agda2-include-dirs (list "." (expand-file-name "~/agda-stdlib-0.11/src")))
-(load-file (let ((coding-system-for-read 'utf-8))
-	     (shell-command-to-string "agda-mode locate")))
-(require 'agda-input)
+;; (setq agda2-include-dirs (list "." (expand-file-name "~/agda-stdlib-0.11/src")))
+;; (load-file (let ((coding-system-for-read 'utf-8))
+;; 	     (shell-command-to-string "agda-mode locate")))
+;; (require 'agda-input)
 
 (use-package tex-site
   :config
@@ -499,6 +552,7 @@
 		     TeX-save-query nil
 		     TeX-PDF-mode t)
 	       (setq TeX-source-correlate-method 'synctex)
+	       (setq reftex-default-bibliography (cons ref-bib '()))
 	       (turn-on-auto-fill)
 	       (define-key LaTeX-mode-map (kbd "C-c C-k") '(lambda () (interactive)
 							     (save-window-excursion
@@ -544,7 +598,7 @@
 
 (setq column-number-mode t
       scroll-step 1
-      scroll-conservatively 10000
+      scroll-conservatively 101
       inhibit-splash-screen t
       initial-scratch-message nil
       echo-keystrokes 0.1
@@ -578,20 +632,26 @@
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
    (quote
-    ("4cf3221feff536e2b3385209e9b9dc4c2e0818a69a1cdb4b522756bcdf4e00a4" "4aee8551b53a43a883cb0b7f3255d6859d766b6c5e14bcb01bed572fcbef4328" "bb08c73af94ee74453c90422485b29e5643b73b05e8de029a6909af6a3fb3f58" "d44939ef462b7efb9bb5739f2dd50b03ac9ecf98c4df6578edcf145d6a2d188d" "1b8d67b43ff1723960eb5e0cba512a2c7a2ad544ddb2533a90101fd1852b426e" "82d2cac368ccdec2fcc7573f24c3f79654b78bf133096f9b40c20d97ec1d8016" "06f0b439b62164c6f8f84fdda32b62fb50b6d00e8b01c2208e55543a6337433a" "282606e51ef2811142af5068bd6694b7cf643b27d63666868bc97d04422318c1" default)))
+    ("94ba29363bfb7e06105f68d72b268f85981f7fba2ddef89331660033101eb5e5" "1fab355c4c92964546ab511838e3f9f5437f4e68d9d1d073ab8e36e51b26ca6a" "a27c00821ccfd5a78b01e4f35dc056706dd9ede09a8b90c6955ae6a390eb1c1e" "4cf3221feff536e2b3385209e9b9dc4c2e0818a69a1cdb4b522756bcdf4e00a4" "4aee8551b53a43a883cb0b7f3255d6859d766b6c5e14bcb01bed572fcbef4328" "bb08c73af94ee74453c90422485b29e5643b73b05e8de029a6909af6a3fb3f58" "d44939ef462b7efb9bb5739f2dd50b03ac9ecf98c4df6578edcf145d6a2d188d" "1b8d67b43ff1723960eb5e0cba512a2c7a2ad544ddb2533a90101fd1852b426e" "82d2cac368ccdec2fcc7573f24c3f79654b78bf133096f9b40c20d97ec1d8016" "06f0b439b62164c6f8f84fdda32b62fb50b6d00e8b01c2208e55543a6337433a" "282606e51ef2811142af5068bd6694b7cf643b27d63666868bc97d04422318c1" default)))
  '(haskell-process-auto-import-loaded-modules t)
  '(haskell-process-log t)
+ '(haskell-process-suggest-hoogle-imports t)
  '(haskell-process-suggest-remove-import-lines t)
- '(haskell-process-type (quote cabal-repl))
+ '(haskell-process-type (quote stack-ghci))
  '(haskell-tags-on-save t)
+ '(org-agenda-files
+   (quote
+    ("/mnt/disk/Study/Indiana/sp16-Y790/9/a7.org" "/mnt/disk/qualification-exam/notes.org")))
  '(package-selected-packages
    (quote
-    (magit zoom-window image+ zenburn-theme writegood-mode workgroups2 warm-night-theme w3m use-package unicode-fonts tidy sml-mode smex screenshot scala-mode2 request racket-mode python-mode pdf-tools paradox multi-term mongo-elnode markdown-mode llvm-mode latex-preview-pane latex-pretty-symbols latex-math-preview langtool jabber image-dired+ ido-ubiquitous hi2 helm-hoogle helm-git helm-bibtex gscholar-bibtex google-translate google-c-style google go-mode git-rebase-mode git-commit-mode gist flycheck-google-cpplint flx-isearch flx-ido fill-column-indicator erlang emamux elfeed eimp ebib dired+ color-theme-sanityinc-tomorrow color-theme-sanityinc-solarized color-theme cmake-mode buffer-move bongo bbdb autodisass-llvm-bitcode auto-complete-nxml auto-complete-auctex auctex-latexmk ace-window ac-slime ac-math ac-haskell-process)))
+    (org-ref seti-theme quasi-monochrome-theme smart-mode-line nyan-mode guide-key magit zoom-window image+ zenburn-theme writegood-mode workgroups2 warm-night-theme w3m use-package unicode-fonts tidy sml-mode smex screenshot scala-mode2 request racket-mode python-mode pdf-tools paradox multi-term mongo-elnode markdown-mode llvm-mode latex-preview-pane latex-pretty-symbols latex-math-preview langtool jabber image-dired+ ido-ubiquitous hi2 helm-hoogle helm-git helm-bibtex gscholar-bibtex google-translate google-c-style google go-mode git-rebase-mode git-commit-mode gist flycheck-google-cpplint flx-isearch flx-ido fill-column-indicator erlang emamux elfeed eimp ebib dired+ color-theme-sanityinc-tomorrow color-theme-sanityinc-solarized color-theme cmake-mode buffer-move bongo bbdb autodisass-llvm-bitcode auto-complete-nxml auto-complete-auctex auctex-latexmk ace-window ac-slime ac-math ac-haskell-process)))
  '(revert-without-query (quote (".*"))))
 
 ;; disable some annoying keychords
 (global-unset-key "\^z")
 (global-unset-key "\C-x\C-z")
+
+(fset 'yes-or-no-p 'y-or-n-p)
 
 (when window-system
   (setq frame-title-format '(buffer-file-name "%f" ("%b")))
@@ -629,6 +689,10 @@
 (defun connect-silo ()
   (interactive)
   (dired "/dalmahal@silo.soic.indiana.edu:/u/dalmahal"))
+
+(defun connect-chris ()
+  (interactive)
+  (dired "/deyaa@129.79.241.140:/home/deyaa"))
 
 (defun sudo-edit (&optional arg)
   "Edit currently visited file as root.

@@ -19,6 +19,9 @@ all:
 	ln -s $(top)/config.fish ~/.config/fish/config.fish
 	ln -s $(top)/.xbindkeysrc ~/.xbindkeysrc
 	ln -s $(top)/.latexmkrc ~/.latexmkrc
+	ln -s $(top)/bundle ~/.config/omf/bundle
+	ln -s $(top)/theme ~/.config/omf/theme
+	ln -s $(top)/init.fish ~/.local/share/omf/init.fish
 	sudo ln -s $(top)/00-keyboard.conf /etc/X11/xorg.conf.d/00-keyboard.conf
 	sudo ln -s $(top)/50-synaptics.conf /etc/X11/xorg.conf.d/50-synaptics.conf
 	sudo ln -s $(top)/jre.sh /etc/profile.d/jre.sh
@@ -32,4 +35,5 @@ clean :
 	~/.xmonad/xmonad.hs /etc/X11/xorg.conf.d/00-keyboard.conf \
 	/etc/X11/xorg.conf.d/50-synaptics.conf /etc/profile.d/jre.sh \
 	/usr/local/bin/emc ~/.xbindkeysrc /etc/cups/printers.conf \
-	~/.latexmkrc
+	~/.latexmkrc ~/.config/omf/bundle ~/.config/omf/theme \
+	~/.local/share/omf/init.fish

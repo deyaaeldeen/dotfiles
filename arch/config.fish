@@ -1,20 +1,15 @@
-set --erase fish_greeting 
-# Path to your oh-my-fish.
-set fish_path $HOME/.oh-my-fish
+#install oh my fish bin/install
 
-# Path to your custom folder (default path is ~/.oh-my-fish/custom)
-#set fish_custom $HOME/dotfiles/oh-my-fish
+# Path to Oh My Fish install.
+set -q XDG_DATA_HOME
+  and set -gx OMF_PATH "$XDG_DATA_HOME/omf"
+  or set -gx OMF_PATH "$HOME/.local/share/omf"
+
+# Customize Oh My Fish configuration path.
+#set -gx OMF_CONFIG "/home/deyaa/.config/omf"
 
 # Load oh-my-fish configuration.
-. $fish_path/oh-my-fish.fish
-
-# Custom plugins and themes may be added to ~/.oh-my-fish/custom
-# Plugins and themes can be found at https://github.com/oh-my-fish/
-Theme 'robbyrussell'
-#Theme 'ocean'
-#Theme 'bobthefish'
-Plugin 'theme'
-Plugin 'balias'
+source $OMF_PATH/init.fish
 
 
 #-----------------------------------------------------------------
@@ -35,7 +30,7 @@ set -x EDITOR "emc"
 
 umask 022
 
-set -x -g PATH $PATH /usr/local/bin /home/deyaa/.cabal/bin /usr/local/texlive/2014/bin/x86_64-linux
+set -x -g PATH $PATH /home/deyaa/.local/bin /usr/local/bin /home/deyaa/.cabal/bin /usr/local/texlive/2014/bin/x86_64-linux
 set -x -g LANG en_US.UTF-8
 set -x -g INFOPATH $INFOPATH /usr/local/texlive/2014/texmf-dist/doc/info
 set -x -g MANPATH $MANPATH /usr/local/texlive/2014/texmf-dist/doc/man
@@ -58,6 +53,7 @@ balias h 'cd ~'
 balias hh 'history'
 balias rm 'rm -rf'
 balias silo "ssh -t -X silo '. ~/.bashrc; exec tmux attach'"
+balias chris "ssh -t -X chris '. ~/.bashrc; exec tmux attach'"
 balias schml "ssh -t -X silo '. ~/.bashrc; exec fish'"
 
 balias img 'sxiv'
@@ -70,13 +66,15 @@ balias kindle "wine ~/.wine/drive_c/Program\ Files\ \(x86\)/Amazon/Kindle/Kindle
 balias wrd "wine /mnt/disk/.wine/drive_c/Program\ Files/Microsoft\ Office/Office14/WINWORD.EXE"
 balias pwr "wine /mnt/disk/.wine/drive_c/Program\ Files/Microsoft\ Office/Office14/POWERPNT.EXE"
 balias maple "/opt/Citrix/ICAClient/wfica.sh ~/Downloads/launch.ica"
-balias nwrk "sudo systemctl restart netctl"
+balias nwrk "sudo systemctl restart netctl-auto@wlp2s0.service"
 balias vb "sudo modprobe vboxdrv; virtualbox"
 balias bat "upower -i (upower -e | grep 'BAT') | grep -E \"state|to\ full|percentage\""
 balias sz "du -sh"
 balias sound "amixer set Master toggle"
 balias disk "ncdu"
 balias ltx "umask 022;sudo tlmgr update --all"
+balias free "df -h"
+balias hib "sudo systemctl hibernate"
 
 balias gs "git status"
 balias gc "git commit -am"

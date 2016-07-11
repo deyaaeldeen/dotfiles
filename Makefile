@@ -9,3 +9,7 @@ all:
 	cp arch/.signature2 soic/.signature2
 	cp arch/.gitconfig soic/.gitconfig
 	cp arch/emc soic/emc
+	cp arch/config.fish soic/config.fish
+	cp arch/bundle soic/bundle
+	cp arch/theme soic/theme
+	cp arch/init.fish soic/init.fish

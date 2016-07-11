@@ -70,7 +70,7 @@ alias p-ql='sudo pacman -Ql'    #find pkg file list
 alias p-qo='sudo pacman -Qo'    #/path/to/file = find owner
 alias p-sf='sudo pacman -Sf'    #reinstall - for dep problem
 alias syu='sudo pacman -Syu;aurget --deps -Syu' # system upgrade
-alias a-s='aurget --deps -S'
+alias a-s='aurget --noconfirm --noedit --deps -S'
 
 alias rakt='racket -il xrepl'
 

@@ -22,7 +22,7 @@ export PS1="\u@\h \w\$ "
 export PROMPT_COMMAND="date"
 
 export LANG=en_US.UTF-8
-export PATH=$PATH:/home/deyaa/.cabal/bin:/usr/local/texlive/2014/bin/x86_64-linux
+export PATH=$PATH:~/.cabal/bin
 export INFOPATH=$INFOPATH:/usr/local/texlive/2014/texmf-dist/doc/info
 export MANPATH=$MANPATH:/usr/local/texlive/2014/texmf-dist/doc/man
 

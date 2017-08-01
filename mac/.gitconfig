@@ -22,4 +22,4 @@
 [alias]
 	gp = push origin master:refs/heads/master
 [core]
-    editor = emacs
+    editor = nano

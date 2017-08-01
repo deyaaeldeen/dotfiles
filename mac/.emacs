@@ -72,6 +72,11 @@
   :ensure t
   :defer t)
 
+(use-package exec-path-from-shell
+  :ensure t
+  :config
+  (exec-path-from-shell-initialize))
+
 (use-package auto-complete
   :ensure t
   :config
@@ -253,11 +258,16 @@
   :ensure t
   :defer t)
 
+(use-package intero
+  :ensure t
+  :defer t)
+
 (use-package haskell-mode
   :ensure t
   :defer t
   :config
   (progn
+    ;; (add-hook 'haskell-mode-hook 'intero-mode)
     (add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
     (add-hook 'haskell-mode-hook #'turn-on-haskell-doc-mode)
     ;; (add-hook 'haskell-mode-hook 'turn-on-hi2)
@@ -281,8 +291,6 @@
       'haskell-process-cabal-build)
     (define-key haskell-mode-map (kbd "C-c C-n c")
       'haskell-process-cabal)
-    (define-key haskell-mode-map (kbd "SPC")
-      'haskell-mode-contextual-space)
     (define-key haskell-mode-map (kbd "C-c C-s") 'haskell-hoogle)
     (setq haskell-hoogle-command "hoogle")
     (eval-after-load 'haskell-cabal
@@ -568,9 +576,12 @@
   (add-hook 'LaTeX-mode-hook 'TeX-source-correlate-mode)
   (add-hook 'LaTeX-mode-hook 'LaTeX-preview-setup))
 
-(use-package unicode-fonts
-  :ensure t
-  :init (unicode-fonts-setup))
+(use-package xclip
+  :ensure t)
+
+;; (use-package unicode-fonts
+;;   :ensure t
+;;   :init (unicode-fonts-setup))
 
 (use-package zoom-window
   :ensure t
@@ -625,28 +636,6 @@
 (global-set-key (kbd "C-c q") 'auto-fill-mode)
 (global-set-key (kbd "C-c i") '(lambda () (interactive) (indent-region (point-min) (point-max))))
 
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(custom-safe-themes
-   (quote
-    ("94ba29363bfb7e06105f68d72b268f85981f7fba2ddef89331660033101eb5e5" "1fab355c4c92964546ab511838e3f9f5437f4e68d9d1d073ab8e36e51b26ca6a" "a27c00821ccfd5a78b01e4f35dc056706dd9ede09a8b90c6955ae6a390eb1c1e" "4cf3221feff536e2b3385209e9b9dc4c2e0818a69a1cdb4b522756bcdf4e00a4" "4aee8551b53a43a883cb0b7f3255d6859d766b6c5e14bcb01bed572fcbef4328" "bb08c73af94ee74453c90422485b29e5643b73b05e8de029a6909af6a3fb3f58" "d44939ef462b7efb9bb5739f2dd50b03ac9ecf98c4df6578edcf145d6a2d188d" "1b8d67b43ff1723960eb5e0cba512a2c7a2ad544ddb2533a90101fd1852b426e" "82d2cac368ccdec2fcc7573f24c3f79654b78bf133096f9b40c20d97ec1d8016" "06f0b439b62164c6f8f84fdda32b62fb50b6d00e8b01c2208e55543a6337433a" "282606e51ef2811142af5068bd6694b7cf643b27d63666868bc97d04422318c1" default)))
- '(haskell-process-auto-import-loaded-modules t)
- '(haskell-process-log t)
- '(haskell-process-suggest-hoogle-imports t)
- '(haskell-process-suggest-remove-import-lines t)
- '(haskell-process-type (quote stack-ghci))
- '(haskell-tags-on-save t)
- '(org-agenda-files
-   (quote
-    ("/mnt/disk/Study/Indiana/sp16-Y790/9/a7.org" "/mnt/disk/qualification-exam/notes.org")))
- '(package-selected-packages
-   (quote
-    (org-ref seti-theme quasi-monochrome-theme smart-mode-line nyan-mode guide-key magit zoom-window image+ zenburn-theme writegood-mode workgroups2 warm-night-theme w3m use-package unicode-fonts tidy sml-mode smex screenshot scala-mode2 request racket-mode python-mode pdf-tools paradox multi-term mongo-elnode markdown-mode llvm-mode latex-preview-pane latex-pretty-symbols latex-math-preview langtool jabber image-dired+ ido-ubiquitous hi2 helm-hoogle helm-git helm-bibtex gscholar-bibtex google-translate google-c-style google go-mode git-rebase-mode git-commit-mode gist flycheck-google-cpplint flx-isearch flx-ido fill-column-indicator erlang emamux elfeed eimp ebib dired+ color-theme-sanityinc-tomorrow color-theme-sanityinc-solarized color-theme cmake-mode buffer-move bongo bbdb autodisass-llvm-bitcode auto-complete-nxml auto-complete-auctex auctex-latexmk ace-window ac-slime ac-math ac-haskell-process)))
- '(revert-without-query (quote (".*"))))
-
 ;; disable some annoying keychords
 (global-unset-key "\^z")
 (global-unset-key "\C-x\C-z")
@@ -684,7 +673,8 @@
  '(font-lock-preprocessor-face ((t (:italic nil :foreground "CornFlowerBlue"))))
  '(font-lock-reference-face ((t (:foreground "DodgerBlue"))))
  '(font-lock-string-face ((t (:foreground "Aquamarine4")))))
-
+(set-face-attribute 'default nil
+                    :family "Inconsolata" :height 145 :weight 'normal)
 
 (defun connect-silo ()
   (interactive)
@@ -693,6 +683,11 @@
 (defun connect-chris ()
   (interactive)
   (dired "/deyaa@129.79.241.140:/home/deyaa"))
+
+(defun connect-cluster ()
+  (interactive)
+  (dired "/ec2-user@52.43.69.198:/tmp/ec2-user/leapyear-integration-tests/ZZAgbY"))
+
 
 (defun sudo-edit (&optional arg)
   "Edit currently visited file as root.
@@ -726,3 +721,40 @@ buffer is not visiting a file."
 
 (setq browse-url-browser-function 'browse-url-generic
       browse-url-generic-program "google-chrome-stable")
+
+(defun set-mac-font (name  size)
+    (interactive
+     (list (completing-read "font-name: " (mapcar (lambda (n) (list n n)) (mapcar (lambda (p) (car p)) (font-family-list))) nil t) 
+           (read-number "size: " 12)))
+    (set-face-attribute 'default nil 
+                        :family name
+                        :slant  'normal
+                        :weight 'normal
+                        :width  'normal
+                        :height (* 10 size)))
+
+(set-mac-font "bitstream vera sans mono" 18)
+
+(setq x-fixed-font-alist
+       '("Font Menu"
+ 	("Misc"
+	 ("Bitstream Vera Sans Mono 10" "-apple-bitstream vera sans mono-medium-r-normal--10-180-72-72-m-180-iso10646-1")
+	 ("Bitstream Vera Sans Mono 12" "-apple-bitstream vera sans mono-medium-r-normal--12-180-72-72-m-180-iso10646-1")
+	 ("Bitstream Vera Sans Mono 14" "-apple-bitstream vera sans mono-medium-r-normal--14-180-72-72-m-180-iso10646-1")
+	 ("Bitstream Vera Sans Mono 16" "-apple-bitstream vera sans mono-medium-r-normal--16-180-72-72-m-180-iso10646-1")
+	 ("Bitstream Vera Sans Mono 18" "-apple-bitstream vera sans mono-medium-r-normal--18-180-72-72-m-180-iso10646-1")
+ 	 )))
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(haskell-process-auto-import-loaded-modules t)
+ '(haskell-process-log t)
+ '(haskell-process-suggest-hoogle-imports t)
+ '(haskell-process-suggest-remove-import-lines t)
+ '(haskell-process-type (quote stack-ghci))
+ '(haskell-tags-on-save t)
+ '(package-selected-packages
+   (quote
+    (csv-mode zoom-window xclip writegood-mode workgroups2 w3m use-package unicode-fonts sml-mode smex smart-mode-line screenshot scala-mode racket-mode python-mode pdf-tools paradox org-ref nyan-mode multi-term markdown-mode magit llvm-mode latex-preview-pane latex-pretty-symbols latex-math-preview langtool intero ido-ubiquitous hi2 guide-key gscholar-bibtex google-translate google-c-style gist flx-isearch flx-ido fill-column-indicator exec-path-from-shell emamux elfeed eimp ebib dired+ cmake-mode buffer-move bbdb autodisass-llvm-bitcode auto-complete-auctex auctex-latexmk ace-window ac-slime ac-math))))

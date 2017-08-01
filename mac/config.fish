@@ -30,7 +30,7 @@ set -x EDITOR "emc"
 
 umask 022
 
-set -x -g PATH $PATH /home/deyaa/.local/bin /usr/local/bin /home/deyaa/.cabal/bin /usr/local/texlive/2014/bin/x86_64-linux
+set -x -g PATH $PATH ~/.local/bin /usr/local/bin ~/.cabal/bin
 set -x -g LANG en_US.UTF-8
 set -x -g INFOPATH $INFOPATH /usr/local/texlive/2014/texmf-dist/doc/info
 set -x -g MANPATH $MANPATH /usr/local/texlive/2014/texmf-dist/doc/man

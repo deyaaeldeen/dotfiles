@@ -26,22 +26,14 @@ if status --is-login
   end
 end
 
-set -x EDITOR "emc"
+set -x EDITOR "emacs"
 
 umask 022
 
 set -x -g PATH $PATH ~/.local/bin /usr/local/bin ~/.cabal/bin
 set -x -g LANG en_US.UTF-8
-set -x -g INFOPATH $INFOPATH /usr/local/texlive/2014/texmf-dist/doc/info
-set -x -g MANPATH $MANPATH /usr/local/texlive/2014/texmf-dist/doc/man
-set -x -g WINEPREFIX /mnt/disk/.wine
-
-# Schml compiler
-set -x schmlUnderConstruction 1
 
 balias l 'ls -lhFa'
-balias c 'reset'
-balias r 'sudo reboot'
 balias .. 'cd ..'
 balias ... 'cd ../../../'
 balias .... 'cd ../../../../'
@@ -54,27 +46,8 @@ balias hh 'history'
 balias rm 'rm -rf'
 balias silo "ssh -t -X silo '. ~/.bashrc; exec tmux attach'"
 balias chris "ssh -t -X chris '. ~/.bashrc; exec tmux attach'"
-balias schml "ssh -t -X silo '. ~/.bashrc; exec fish'"
 
-balias img 'sxiv'
-balias 'cdrom' 'sudo mount -a /dev/sr0' # pass the path to mount the cd in
-balias wrk 'cd /mnt/disk/Work/Indiana/gradual/'
-balias sd 'cd /mnt/disk/Study/Indiana'
-balias t 'cd /mnt/disk/Teaching'
-balias is "/mnt/disk/Study/Indiana/B522/./isabelle.sh"
-balias kindle "wine ~/.wine/drive_c/Program\ Files\ \(x86\)/Amazon/Kindle/Kindle For PC/Kindle.exe"
-balias wrd "wine /mnt/disk/.wine/drive_c/Program\ Files/Microsoft\ Office/Office14/WINWORD.EXE"
-balias pwr "wine /mnt/disk/.wine/drive_c/Program\ Files/Microsoft\ Office/Office14/POWERPNT.EXE"
-balias maple "/opt/Citrix/ICAClient/wfica.sh ~/Downloads/launch.ica"
-balias nwrk "sudo systemctl restart netctl-auto@wlp2s0.service"
-balias vb "sudo modprobe vboxdrv; virtualbox"
-balias bat "upower -i (upower -e | grep 'BAT') | grep -E \"state|to\ full|percentage\""
-balias sz "du -sh"
-balias sound "amixer set Master toggle"
-balias disk "ncdu"
 balias ltx "umask 022;sudo tlmgr update --all"
-balias free "df -h"
-balias hib "sudo systemctl hibernate"
 
 balias gs "git status"
 balias gc "git commit -am"
@@ -83,8 +56,6 @@ balias gl "git pull"
 balias glg 'git log'
 balias gcn 'git clean -xfd'
 balias gdr 'git push origin :'
-
-balias rakt 'racket -il xrepl'
 
 function extract
      if test -e $argv[1]
@@ -125,18 +96,6 @@ function extract
      end
 end
 
-function shot
-	/usr/bin/import -frame -strip -quality 75 "$HOME/"(date +%s)".png"
-end
-
 function sr
     find $argv[1] -type f -execdir sed -i "s/$argv[2]/$argv[3]/g" '{}' +
-end
-
-function prjcton
-    xrandr --output HDMI1 --mode 1280x800
-end
-
-function prjctoff
-    xrandr --output HDMI1 --off
 end

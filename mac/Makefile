@@ -15,13 +15,8 @@ all:
 	ln -s $(top)/.tmux.conf ~/.tmux.conf
 	ln -s $(top)/config.fish ~/.config/fish/config.fish
 	ln -s $(top)/.latexmkrc ~/.latexmkrc
-	ln -s $(top)/bundle ~/.config/omf/bundle
-	ln -s $(top)/theme ~/.config/omf/theme
-	ln -s $(top)/init.fish ~/.local/share/omf/init.fish
 
 clean :
 	rm -f ~/.ssh/config ~/.bash_profile ~/.bashrc ~/.emacs \
 	~/.gnus ~/.authinfo ~/.signature ~/.signature2 ~/.gitconfig  \
-	~/.tmux.conf ~/.config/fish/config.fish \
-	~/.latexmkrc ~/.config/omf/bundle ~/.config/omf/theme \
-	~/.local/share/omf/init.fish
+	~/.tmux.conf ~/.config/fish/config.fish	~/.latexmkrc

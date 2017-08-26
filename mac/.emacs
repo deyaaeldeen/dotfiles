@@ -317,6 +317,7 @@
 (use-package ido
   :init
   (ido-mode t)
+  (ido-everywhere 1)
   :config
   (setq ido-use-virtual-buffers t
 	ido-auto-merge-work-directories-length -1
@@ -326,7 +327,7 @@
 	ido-save-directory-list-file (concat user-emacs-directory "ido.last")
 	ido-use-faces nil))
 
-(use-package ido-ubiquitous
+(use-package ido-completing-read+
   :ensure t
   :init
   (ido-ubiquitous-mode 1))

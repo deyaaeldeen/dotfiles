@@ -190,6 +190,7 @@
   :ensure t
   :defer t
   :init
+  (setq-default fill-column 80)
   (hook-into-modes 'fci-mode '(prog-mode-hook)))
 
 (use-package flx-ido
@@ -476,7 +477,31 @@
   :ensure t
   :defer t
   :config
-  (global-eldoc-mode 0))
+  (global-eldoc-mode 0)
+  ;; Add indention to grift symbols 
+  (mapc (lambda (x)
+	  (put (car x) 'racket-indent-function (cadr x))
+	  (let ((typed (intern (format "%s:" (car x)))))
+	    (put typed 'racket-indent-function (cadr x))))
+	'((assign$ 1)
+	  (op$ 1)
+	  (let$* 1)
+	  (let*$ 1)
+	  (let$  1)
+	  (Let 1)
+	  (Lambda 1)
+	  (Letrec 1)
+	  (Code 1)
+	  (code$ 1)
+	  (case$ 1)
+	  (Switch 1)
+	  (Letrec 1)
+	  (Repeat 5)
+	  (repeat$ 2)
+	  (precondition$ 1)
+	  (Prog 1)
+	  (GlobDecs 1)
+	  (Labels 1))))
 
 (use-package recentf
   :ensure t
@@ -724,20 +749,20 @@ buffer is not visiting a file."
       browse-url-generic-program "google-chrome-stable")
 
 (defun set-mac-font (name  size)
-    (interactive
-     (list (completing-read "font-name: " (mapcar (lambda (n) (list n n)) (mapcar (lambda (p) (car p)) (font-family-list))) nil t) 
-           (read-number "size: " 12)))
-    (set-face-attribute 'default nil 
-                        :family name
-                        :slant  'normal
-                        :weight 'normal
-                        :width  'normal
-                        :height (* 10 size)))
+  (interactive
+   (list (completing-read "font-name: " (mapcar (lambda (n) (list n n)) (mapcar (lambda (p) (car p)) (font-family-list))) nil t) 
+	 (read-number "size: " 12)))
+  (set-face-attribute 'default nil 
+		      :family name
+		      :slant  'normal
+		      :weight 'normal
+		      :width  'normal
+		      :height (* 10 size)))
 
 (set-mac-font "bitstream vera sans mono" 18)
 
 (setq x-fixed-font-alist
-       '("Font Menu"
+      '("Font Menu"
  	("Misc"
 	 ("Bitstream Vera Sans Mono 10" "-apple-bitstream vera sans mono-medium-r-normal--10-180-72-72-m-180-iso10646-1")
 	 ("Bitstream Vera Sans Mono 12" "-apple-bitstream vera sans mono-medium-r-normal--12-180-72-72-m-180-iso10646-1")

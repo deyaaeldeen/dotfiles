@@ -28,22 +28,26 @@
 (defconst ref-bib "~/Dropbox/bib/library.bib")
 (defconst ref-lib "~/Dropbox/bib/lib/")
 
-(require 'package)
-(add-to-list 'package-archives
-             '("melpa" . "http://melpa.milkbox.net/packages/") t)
-(add-to-list 'package-archives
-             '("marmalade" . "http://marmalade-repo.org/packages/"))
-(package-initialize)
+(defvar bootstrap-version)
+(let ((bootstrap-file
+       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+      (bootstrap-version 5))
+  (unless (file-exists-p bootstrap-file)
+    (with-current-buffer
+        (url-retrieve-synchronously
+         "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+         'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
 
 (defmacro hook-into-modes (function mode-hooks)
   "Add FUNCTION to hooks in MODE-HOOKS."
   `(dolist (hook ,mode-hooks)
      (add-hook hook ,function)))
 
-;; Bootstrap  use-package
-(unless (package-installed-p 'use-package)
-  (package-refresh-contents)
-  (package-install 'use-package))
+(straight-use-package 'use-package)
+;; (setq straight-use-package-by-default 1)
 
 (eval-when-compile
   (require 'use-package))
@@ -51,34 +55,34 @@
       use-package-verbose t)
 
 (use-package ac-math
-  :ensure t
+  :straight t
   :defer t)
 
 (use-package ac-slime
-  :ensure t
+  :straight t
   :defer t)
 
 (use-package ace-window
-  :ensure t
+  :straight t
   :bind ("C-x x" . ace-window)
   :init
   (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)))
 
 (use-package auctex
-  :ensure auctex
+  :straight auctex
   :defer t)
 
 (use-package auctex-latexmk
-  :ensure t
+  :straight t
   :defer t)
 
 (use-package exec-path-from-shell
-  :ensure t
+  :straight t
   :config
   (exec-path-from-shell-initialize))
 
 (use-package auto-complete
-  :ensure t
+  :straight t
   :config
   (setq ac-math-unicode-in-math-p t
 	global-auto-complete-mode t)
@@ -87,19 +91,19 @@
   (ac-set-trigger-key "C-o"))
 
 (use-package auto-complete-auctex
-  :ensure t
+  :straight t
   :defer t)
 
 (use-package autodisass-llvm-bitcode
-  :ensure t
+  :straight t
   :defer t)
 
 (use-package bbdb
-  :ensure t
+  :straight t
   :defer t)
 
 (use-package bibtex
-  :ensure t
+  :straight t
   :defer t
   :mode ("\\.bib" . bibtex-mode)
   :config
@@ -107,7 +111,7 @@
   (add-hook 'bibtex-mode-hook (lambda () (set-fill-column 120))))
 
 (use-package buffer-move
-  :ensure t
+  :straight t
   :init
   (global-set-key (kbd "<C-S-up>")     'buf-move-up)
   (global-set-key (kbd "<C-S-down>")   'buf-move-down)
@@ -115,7 +119,7 @@
   (global-set-key (kbd "<C-S-right>")  'buf-move-right))
 
 (use-package cmake-mode
-  :ensure t
+  :straight t
   :defer t)
 
 (use-package dired
@@ -124,23 +128,23 @@
   (setq dired-listing-switches "-lGh --group-directories-first"))
 
 (use-package dired+
-  :ensure t
+  :straight t
   :defer t
   :config
   (setq diredp-wrap-around-flag t))
 
 (use-package ebib
-  :ensure t
+  :straight t
   :defer t)
 
 (use-package eimp
-  :ensure t
+  :straight t
   :defer t
   :config
   (add-hook 'image-mode-hook 'eimp-mode))
 
 (use-package elfeed
-  :ensure t
+  :straight t
   :defer t
   :config
   (setq elfeed-feeds
@@ -159,7 +163,7 @@
 	  "http://hnapp.com/rss?q=type%3Ajob%20-senior")))
 
 (use-package emamux
-  :ensure t
+  :straight t
   :defer t)
 
 (use-package epa
@@ -187,24 +191,24 @@
 	  ".*/signed")))
 
 (use-package fill-column-indicator
-  :ensure t
+  :straight t
   :defer t
   :init
   (setq-default fill-column 80)
   (hook-into-modes 'fci-mode '(prog-mode-hook)))
 
 (use-package flx-ido
-  :ensure t
+  :straight t
   :init
   (flx-ido-mode 1))
 
 (use-package flx-isearch
-  :ensure t
+  :straight t
   :bind (("C-M-s" . flx-isearch-forward)
 	 ("C-M-r" . flx-isearch-backward)))
 
 (use-package flycheck
-  :ensure t
+  :straight t
   :init
   (hook-into-modes 'flycheck-mode '(prog-mode-hook))
   :config
@@ -216,7 +220,7 @@
   (global-flycheck-mode t))
 
 (use-package flyspell
-  :ensure t
+  :straight t
   :init
   (dolist (hook '(text-mode-hook))
     (add-hook hook (lambda () (flyspell-mode 1))))
@@ -224,7 +228,7 @@
     (add-hook hook (lambda () (flyspell-mode -1)))))
 
 (use-package gist
-  :ensure t
+  :straight t
   :bind ("C-c g" . gist-region-or-buffer-private)
   :config
   (setq gist-view-gist t))
@@ -233,38 +237,66 @@
   :bind (("C-c s" . gnus) ("C-c c" . browse-url)))
 
 (use-package google-c-style
-  :ensure t
+  :straight t
   :defer t)
 
 (use-package google-translate
-  :ensure t
+  :straight t
   :defer t
   :bind ("C-c t" . google-translate-at-point))
 
 (use-package gscholar-bibtex
-  :ensure t
+  :straight t
   :bind ("C-c g" . gscholar-bibtex)
   :config
   (setq gscholar-bibtex-default-source "Google Scholar"
 	gscholar-bibtex-database-file ref-bib))
 
 (use-package guide-key
-  :ensure t
+  :straight t
   :init
   (guide-key-mode 1)
   :config
   (setq guide-key/guide-key-sequence t))
 
 (use-package hi2
-  :ensure t
+  :straight t
   :defer t)
 
 (use-package intero
-  :ensure t
+  :straight t
   :defer t)
 
+(use-package lsp-haskell
+  :straight t
+  :defer t)
+
+(use-package lsp-mode
+  :defer t
+  :diminish lsp-mode
+  :commands
+  (lsp-mode lsp-define-stdio-client lsp-client-on-notification lsp-make-traverser)
+  :init (setq lsp-enable-eldoc t))
+
+(use-package lsp-ui
+  :straight t
+  :defer t
+  :after lsp-mode
+  :config
+  (add-hook 'lsp-ui-doc-mode-hook
+            (lambda () (when lsp-ui-doc-mode (eldoc-mode -1))))
+  (add-hook 'lsp-ui-mode-hook 'lsp-ui-doc-enable)
+  :hook
+  (lsp-after-open . (lambda () (lsp-ui-mode 1))))
+
+(use-package company-lsp
+  :straight t
+  :after (company lsp-mode)
+  :config
+  (push 'company-lsp company-backends))
+
 (use-package haskell-mode
-  :ensure t
+  :straight t
   :defer t
   :config
   (progn
@@ -306,7 +338,7 @@
            'haskell-process-cabal)))))
 
 (use-package helm-bibtex
-  :ensure t
+  :straight t
   :defer t
   :bind ("C-c b" . helm-bibtex)
   :config
@@ -329,12 +361,12 @@
 	ido-use-faces nil))
 
 (use-package ido-completing-read+
-  :ensure t
+  :straight t
   :init
   (ido-ubiquitous-mode 1))
 
 (use-package langtool
-  :ensure t
+  :straight t
   :defer t
   :config
   (setq langtool-language-tool-jar "/usr/share/java/languagetool/languagetool-commandline.jar"
@@ -343,27 +375,23 @@
 	langtool-mother-tongue "en"))
 
 (use-package latex-math-preview
-  :ensure t
+  :straight t
   :defer t)
 
 (use-package latex-preview-pane
-  :ensure t
+  :straight t
   :defer t)
 
 (use-package latex-pretty-symbols
-  :ensure t
-  :defer t)
-
-(use-package llvm-mode
-  :ensure t
+  :straight t
   :defer t)
 
 (use-package magit
-  :ensure t
+  :straight t
   :bind ("C-x C-g" . magit-status))
 
 (use-package markdown-mode
-  :ensure t
+  :straight t
   :defer t
   :mode ("\\.\\(m\\(ark\\)?down\\|md\\)$" . markdown-mode)
   :init
@@ -375,12 +403,13 @@
         (setq markdown-command preferred-markdown-impl)))))
 
 (use-package nyan-mode
-  :ensure t
+  :straight t
   :init (nyan-mode))
 
 (use-package org
+  :straight t
   :config
-  (require 'org-ref)
+;;  (require 'org-ref)
   (setq org-support-shift-select t
 	org-completion-use-ido t
 	org-src-fontify-natively t)
@@ -388,10 +417,15 @@
   (setq org-ditaa-jar-path "/usr/share/java/ditaa/ditaa-0_9.jar")
   (org-babel-do-load-languages
    'org-babel-load-languages
-   '((ditaa . t))))
+   '((ditaa . t)
+     (C . t)
+     (calc . t)
+     (dot . t)
+     (haskell . t)
+     (sh . t))))
 
 (use-package org-ref
-  :ensure t
+  :straight t
   :bind (("<f10>" . org-ref-open-bibtex-notes)
 	 ("<f11>" . org-ref-open-bibtex-pdf)
 	 ("<f12>" . org-ref-open-in-browser))
@@ -406,12 +440,16 @@
   (require 'org-ref-bibtex)
   (require 'org-ref-arxiv))
 
+(use-package ox-reveal
+  :straight t
+  :defer t)
+
 (use-package paradox
-  :ensure t
+  :straight t
   :defer t)
 
 (use-package pdf-tools
-  :ensure t
+  :straight t
   :init
   (add-hook 'pdf-view-mode-hook 'pdf-tools-enable-minor-modes)
   :mode (("\\.pdf$" . pdf-view-mode))
@@ -429,7 +467,7 @@
   	pdf-outline-imenu-use-flat-menus nil))
 
 (use-package multi-term
-  :ensure t
+  :straight t
   :init
   (setq multi-term-program "/bin/fish")
   :bind ("C-c z" . multi-term)
@@ -470,11 +508,11 @@
   (setq truncate-lines 1))
 
 (use-package python-mode
-  :ensure t
+  :straight t
   :defer t)
 
 (use-package racket-mode
-  :ensure t
+  :straight t
   :defer t
   :config
   (global-eldoc-mode 0)
@@ -484,7 +522,9 @@
 	  (let ((typed (intern (format "%s:" (car x)))))
 	    (put typed 'racket-indent-function (cadr x))))
 	'((assign$ 1)
+	  (Assign 1)
 	  (op$ 1)
+	  (app$ 1)
 	  (let$* 1)
 	  (let*$ 1)
 	  (let$  1)
@@ -504,7 +544,7 @@
 	  (Labels 1))))
 
 (use-package recentf
-  :ensure t
+  :straight t
   :bind ("C-x C-r" . recentf-open-files)
   :init
   (recentf-mode 1))
@@ -515,37 +555,37 @@
   (setq save-place-file (expand-file-name ".places" user-emacs-directory)))
 
 (use-package scala-mode
-  :ensure t
+  :straight t
   :defer t)
 
 (use-package screenshot
-  :ensure t
+  :straight t
   :defer t)
 
 (use-package smart-mode-line
-  :ensure t
+  :straight t
   :init
   (setq sml/no-confirm-load-theme t
 	sml/name-width 10)
   (sml/setup))
 
 (use-package smex
-  :ensure t
+  :straight t
   :demand t
   :bind ("M-x" . smex)
   :init
   (setq smex-save-file (expand-file-name ".smex-items" user-emacs-directory)))
 
 (use-package sml-mode
-  :ensure t
+  :straight t
   :defer t)
 
 (use-package w3m
-  :ensure t
+  :straight t
   :defer t)
 
 (use-package workgroups2
-  :ensure t
+  :straight t
   :init
   (wg-reload-session) ;; tricking it to load
   :config
@@ -560,13 +600,13 @@
   :bind ("C-x C-l" . wg-reload-session))
 
 (use-package writegood-mode
-  :ensure t
+  :straight t
   :defer t)
 
 ;; (setq agda2-include-dirs (list "." (expand-file-name "~/agda-stdlib-0.11/src")))
-;; (load-file (let ((coding-system-for-read 'utf-8))
-;; 	     (shell-command-to-string "agda-mode locate")))
-;; (require 'agda-input)
+(load-file (let ((coding-system-for-read 'utf-8))
+	     (shell-command-to-string "agda-mode locate")))
+(require 'agda-input)
 
 (use-package tex-site
   :config
@@ -587,7 +627,6 @@
 		     TeX-PDF-mode t)
 	       (setq TeX-source-correlate-method 'synctex)
 	       (setq reftex-default-bibliography (cons ref-bib '()))
-	       (turn-on-auto-fill)
 	       (define-key LaTeX-mode-map (kbd "C-c C-k") '(lambda () (interactive)
 							     (save-window-excursion
 							       (recompile))))
@@ -600,17 +639,18 @@
   (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
   (add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
   (add-hook 'LaTeX-mode-hook 'TeX-source-correlate-mode)
-  (add-hook 'LaTeX-mode-hook 'LaTeX-preview-setup))
+  (add-hook 'LaTeX-mode-hook 'LaTeX-preview-setup)
+  (add-hook 'LaTeX-mode-hook 'turn-on-auto-fill))
 
 (use-package xclip
-  :ensure t)
+  :straight t)
 
 ;; (use-package unicode-fonts
-;;   :ensure t
+;;   :straight t
 ;;   :init (unicode-fonts-setup))
 
 (use-package zoom-window
-  :ensure t
+  :straight t
   :bind ("C-x d" . zoom-window-zoom))
 
 (show-paren-mode 1)
@@ -622,8 +662,8 @@
 	(t (self-insert-command (or arg 1)))))
 (global-set-key "%" 'match-paren)
 
-(tool-bar-mode 0)
-(menu-bar-mode 0)
+;; (tool-bar-mode 0)
+;; (menu-bar-mode 0)
 (scroll-bar-mode 0)
 
 (delete-selection-mode t)
@@ -706,9 +746,9 @@
   (interactive)
   (dired "/dalmahal@silo.soic.indiana.edu:/u/dalmahal"))
 
-(defun connect-chris ()
+(defun connect-sarge ()
   (interactive)
-  (dired "/deyaa@129.79.241.140:/home/deyaa"))
+  (dired "/dalmahal@sarge.sice.indiana.edu:/home/dalmahal"))
 
 (defun connect-cluster ()
   (interactive)
@@ -746,7 +786,7 @@ buffer is not visiting a file."
 (global-set-key (kbd "C-x t") 'window-split-toggle)
 
 (setq browse-url-browser-function 'browse-url-generic
-      browse-url-generic-program "google-chrome-stable")
+      browse-url-generic-program "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome")
 
 (defun set-mac-font (name  size)
   (interactive
@@ -783,4 +823,9 @@ buffer is not visiting a file."
  '(haskell-tags-on-save t)
  '(package-selected-packages
    (quote
-    (csv-mode zoom-window xclip writegood-mode workgroups2 w3m use-package unicode-fonts sml-mode smex smart-mode-line screenshot scala-mode racket-mode python-mode pdf-tools paradox org-ref nyan-mode multi-term markdown-mode magit llvm-mode latex-preview-pane latex-pretty-symbols latex-math-preview langtool intero ido-ubiquitous hi2 guide-key gscholar-bibtex google-translate google-c-style gist flx-isearch flx-ido fill-column-indicator exec-path-from-shell emamux elfeed eimp ebib dired+ cmake-mode buffer-move bbdb autodisass-llvm-bitcode auto-complete-auctex auctex-latexmk ace-window ac-slime ac-math))))
+    (ox-reveal lsp-ui lsp-mode rtags hide-comnt image+ csv-mode zoom-window xclip workgroups2 unicode-fonts sml-mode smex screenshot scala-mode paradox nyan-mode multi-term magit llvm-mode latex-preview-pane latex-pretty-symbols latex-math-preview langtool intero ido-ubiquitous hi2 guide-key gscholar-bibtex google-translate google-c-style gist flx-isearch flx-ido fill-column-indicator exec-path-from-shell emamux elfeed eimp ebib dired+ cmake-mode buffer-move bbdb autodisass-llvm-bitcode auto-complete-auctex auctex-latexmk ace-window ac-slime ac-math))))
+
+ (add-hook 'java-mode-hook (lambda ()
+                                (setq c-basic-offset 4
+                                      tab-width 4
+                                      indent-tabs-mode t)))

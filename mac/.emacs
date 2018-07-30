@@ -54,6 +54,13 @@
 (setq use-package-minimum-reported-time 0
       use-package-verbose t)
 
+(use-package solarized-theme
+  :straight t
+  :init
+  (load-theme 'solarized-dark t)
+  :config
+  (setq x-underline-at-descent-line t))
+
 (use-package ac-math
   :straight t
   :defer t)
@@ -259,13 +266,8 @@
   :config
   (setq guide-key/guide-key-sequence t))
 
-(use-package hi2
-  :straight t
-  :defer t)
-
-(use-package intero
-  :straight t
-  :defer t)
+(use-package hydra
+  :straight t)
 
 (use-package lsp-haskell
   :straight t
@@ -289,21 +291,28 @@
   :hook
   (lsp-after-open . (lambda () (lsp-ui-mode 1))))
 
+(use-package company
+  :straight t)
+
 (use-package company-lsp
   :straight t
   :after (company lsp-mode)
   :config
   (push 'company-lsp company-backends))
 
+(use-package idris-mode
+  :straight t
+  :config
+  (use-package helm-idris
+    :straight t))
+
 (use-package haskell-mode
   :straight t
-  :defer t
+  :mode "\\.hs\\'"
   :config
   (progn
-    ;; (add-hook 'haskell-mode-hook 'intero-mode)
     (add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
     (add-hook 'haskell-mode-hook #'turn-on-haskell-doc-mode)
-    ;; (add-hook 'haskell-mode-hook 'turn-on-hi2)
     (add-hook 'haskell-mode-hook '(lambda () (setq tab-width 2)))
     (custom-set-variables
      '(haskell-process-suggest-hoogle-imports t)
@@ -335,7 +344,46 @@
          (define-key haskell-cabal-mode-map (kbd "C-c C-c")
            'haskell-process-cabal-build)
          (define-key haskell-cabal-mode-map (kbd "C-c c")
-           'haskell-process-cabal)))))
+           'haskell-process-cabal))))
+
+  (use-package intero
+    :straight t
+    :bind
+    (:map intero-mode-map
+	  ("M-]" . intero-goto-definition)
+	  ("M-[" . xref-pop-marker-stack)
+	  ("C-c C-a" . haskell-reformat-buffer)
+	  ("C-C C-d" . hs-hoogle/info)
+	  ("C-c h" . hs-hoogle/helm))
+    :init
+    ;; I get this issue: https://github.com/commercialhaskell/intero/issues/308
+    ;; (add-hook 'haskell-mode-hook 'intero-mode)
+    :config
+    (intero-global-mode 1)
+    (setq flycheck-check-syntax-automatically '(save)))
+  
+  (use-package hindent
+    :straight t
+    :init
+    (add-hook 'haskell-mode-hook 'hindent-mode))
+
+  (use-package hlint-refactor
+    :straight t
+    :init
+    (add-hook 'haskell-mode-hook 'hlint-refactor-mode))
+
+  (use-package shm
+    :straight t
+    :init
+    (add-hook 'haskell-mode-hook 'structured-haskell-mode))
+
+  (use-package company-ghc
+    :straight t
+    :init
+    (add-hook 'haskell-mode-hook 'company-mode))
+
+  (use-package helm-ghc
+    :straight t))
 
 (use-package helm-bibtex
   :straight t
@@ -409,7 +457,6 @@
 (use-package org
   :straight t
   :config
-;;  (require 'org-ref)
   (setq org-support-shift-select t
 	org-completion-use-ido t
 	org-src-fontify-natively t)
@@ -422,27 +469,26 @@
      (calc . t)
      (dot . t)
      (haskell . t)
-     (sh . t))))
-
-(use-package org-ref
-  :straight t
-  :bind (("<f10>" . org-ref-open-bibtex-notes)
-	 ("<f11>" . org-ref-open-bibtex-pdf)
-	 ("<f12>" . org-ref-open-in-browser))
-  :config
-  ;; see org-ref for use of these variables
-  (setq org-ref-bibliography-notes "~/Dropbox/bib/notes.org"
-	org-ref-default-bibliography (cons ref-bib '())
-	org-ref-pdf-directory ref-lib)
-  ;; optional but very useful libraries in org-ref
-  (require 'doi-utils)
-  (require 'org-ref-pdf)
-  (require 'org-ref-bibtex)
-  (require 'org-ref-arxiv))
-
-(use-package ox-reveal
-  :straight t
-  :defer t)
+     (sh . t)))
+  (use-package org-ref
+    :straight t
+    :bind (("<f10>" . org-ref-open-bibtex-notes)
+	   ("<f11>" . org-ref-open-bibtex-pdf)
+	   ("<f12>" . org-ref-open-in-browser))
+    :config
+    ;; see org-ref for use of these variables
+    (setq org-ref-bibliography-notes "~/Dropbox/bib/notes.org"
+	  org-ref-default-bibliography (cons ref-bib '())
+	  org-ref-pdf-directory ref-lib)
+    ;; optional but very useful libraries in org-ref
+    (require 'doi-utils)
+    (require 'org-ref-pdf)
+    (require 'org-ref-bibtex)
+    (require 'org-ref-arxiv))
+  (require 'org-ref)
+  (use-package ox-reveal
+    :straight t
+    :defer t))
 
 (use-package paradox
   :straight t
@@ -562,6 +608,10 @@
   :straight t
   :defer t)
 
+(use-package sh-script
+  :straight t
+  :defer t)
+
 (use-package smart-mode-line
   :straight t
   :init
@@ -579,6 +629,20 @@
 (use-package sml-mode
   :straight t
   :defer t)
+
+(use-package vdiff
+  :straight t
+  :defer t
+  :config
+  (use-package vdiff-hydra
+    :straight t
+    :defer t))
+
+(use-package vlf
+  :straight t
+  :after t
+  :custom
+  (vlf-application 'dont-ask))
 
 (use-package w3m
   :straight t
@@ -723,22 +787,6 @@
   (or window-system
       (face-set-after-frame-default (selected-frame))))
 
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(default ((t (:inherit nil :stipple nil :background "white" :foreground "black" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :width normal :height 120 :family "liberation mono"))))
- '(background "blue")
- '(font-lock-builtin-face ((((class color) (background dark)) (:foreground "Turquoise"))))
- '(font-lock-comment-face ((t (:foreground "darkred"))))
- '(font-lock-constant-face ((((class color) (background dark)) (:bold t :foreground "DarkOrchid"))))
- '(font-lock-doc-string-face ((t (:foreground "lightblue"))))
- '(font-lock-function-name-face ((t (:foreground "blue"))))
- '(font-lock-keyword-face ((t (:bold t :foreground "steelblue"))))
- '(font-lock-preprocessor-face ((t (:italic nil :foreground "CornFlowerBlue"))))
- '(font-lock-reference-face ((t (:foreground "DodgerBlue"))))
- '(font-lock-string-face ((t (:foreground "Aquamarine4")))))
 (set-face-attribute 'default nil
                     :family "Inconsolata" :height 145 :weight 'normal)
 
@@ -749,10 +797,6 @@
 (defun connect-sarge ()
   (interactive)
   (dired "/dalmahal@sarge.sice.indiana.edu:/home/dalmahal"))
-
-(defun connect-cluster ()
-  (interactive)
-  (dired "/ec2-user@52.43.69.198:/tmp/ec2-user/leapyear-integration-tests/ZZAgbY"))
 
 
 (defun sudo-edit (&optional arg)
@@ -810,22 +854,3 @@ buffer is not visiting a file."
 	 ("Bitstream Vera Sans Mono 16" "-apple-bitstream vera sans mono-medium-r-normal--16-180-72-72-m-180-iso10646-1")
 	 ("Bitstream Vera Sans Mono 18" "-apple-bitstream vera sans mono-medium-r-normal--18-180-72-72-m-180-iso10646-1")
  	 )))
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(haskell-process-auto-import-loaded-modules t)
- '(haskell-process-log t)
- '(haskell-process-suggest-hoogle-imports t)
- '(haskell-process-suggest-remove-import-lines t)
- '(haskell-process-type (quote stack-ghci))
- '(haskell-tags-on-save t)
- '(package-selected-packages
-   (quote
-    (ox-reveal lsp-ui lsp-mode rtags hide-comnt image+ csv-mode zoom-window xclip workgroups2 unicode-fonts sml-mode smex screenshot scala-mode paradox nyan-mode multi-term magit llvm-mode latex-preview-pane latex-pretty-symbols latex-math-preview langtool intero ido-ubiquitous hi2 guide-key gscholar-bibtex google-translate google-c-style gist flx-isearch flx-ido fill-column-indicator exec-path-from-shell emamux elfeed eimp ebib dired+ cmake-mode buffer-move bbdb autodisass-llvm-bitcode auto-complete-auctex auctex-latexmk ace-window ac-slime ac-math))))
-
- (add-hook 'java-mode-hook (lambda ()
-                                (setq c-basic-offset 4
-                                      tab-width 4
-                                      indent-tabs-mode t)))
